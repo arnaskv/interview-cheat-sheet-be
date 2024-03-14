@@ -1,0 +1,12 @@
+[versions]
+springBootVersion = "3.2.3"
+mapstructVersion = "1.5.5.Final"
+lombokVersion = "1.18.30"
+lombokMapstructBindingVersion = "0.2.0"
+
+
+[libraries]
+mapstruct = { module = "org.mapstruct:mapstruct", version.ref = "mapstructVersion"}
+mapstruct-processor = { module = "org.mapstruct:mapstruct-processor", version.ref = "mapstructVersion"}
+lombok = { module = "org.projectlombok:lombok", version.ref = "lombokVersion" }
+lombok-mapstruct-binding = { module = "org.projectlombok:lombok-mapstruct-binding", version.ref = "lombokMapstructBindingVersion" }
