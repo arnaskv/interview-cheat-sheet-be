@@ -58,3 +58,9 @@ status() {
         fi
     fi
 }
+
+deploy() {
+    if [ "$MERGE_STATUS" == "MERGED" ]; then
+        echo "DEPLOY=true" >> ../clone.env
+    fi
+}

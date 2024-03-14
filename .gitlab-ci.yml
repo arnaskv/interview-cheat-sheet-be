@@ -23,11 +23,13 @@ clone:
     - git checkout $SOURCE_BRANCH_NAME
     - MASTER_HASH=$(git show-ref | grep refs/remotes/origin/master | awk '{print $1}')
     - status INPROGRESS
+    - deploy
     - echo "MASTER_HASH=$(git show-ref | grep refs/remotes/origin/master | awk '{print $1}')" >> ../clone.env
   artifacts:
     reports:
       dotenv: clone.env
     paths:
+      - clone.env
       - git-clone/*
 
 build:
@@ -43,17 +45,21 @@ deploy:
   stage: deploy
   image: $ACR_URL/gitlab/packages:latest
   script:
-    - cd git-clone/helm
-    - helm upgrade
-      --install backend backend
-      --namespace $TEAM_NAME
-      --create-namespace
-      --values backend/values.yaml
-      --set backend.container.image=$IMG_APP
-      --set backend.ingress.host=$HOST
-      --set backend.container.port=$CONTAINER_PORT
-    - kubectl get secret regcred -n gitlab -o json | jq 'del(.metadata["namespace","creationTimestamp","resourceVersion","selfLink","uid"])' | kubectl apply -n $TEAM_NAME -f -
-    - kubectl rollout restart -n $TEAM_NAME deployment $TEAM_NAME-backend
+    - if [[ "$DEPLOY" == "true" ]]; then
+        cd git-clone/helm;
+        helm upgrade
+        --install backend backend
+        --namespace $TEAM_NAME
+        --create-namespace
+        --values backend/values.yaml
+        --set backend.container.image=$IMG_APP
+        --set backend.ingress.host=$HOST
+        --set backend.container.port=$CONTAINER_PORT;
+        kubectl get secret regcred -n gitlab -o json | jq 'del(.metadata["namespace","creationTimestamp","resourceVersion","selfLink","uid"])' | kubectl apply -n $TEAM_NAME -f -;
+        kubectl rollout restart -n $TEAM_NAME deployment $TEAM_NAME-backend;
+      fi
+  dependencies:
+    - clone
 
 status_ok:
   stage: status
