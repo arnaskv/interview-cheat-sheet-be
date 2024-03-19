@@ -24,6 +24,9 @@ dependencies {
     // Database and Liquibase for database migrations
     runtimeOnly 'org.postgresql:postgresql'
     // implementation 'org.liquibase:liquibase-core' // Useful tool for database migrations, but required db configuration for now
+    // https://mvnrepository.com/artifact/org.hibernate.validator/hibernate-validator
+    implementation 'org.hibernate.validator:hibernate-validator:8.0.1.Final'
+
 
     // Lombok to reduce boilerplate code
     compileOnly libs.lombok
