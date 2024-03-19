@@ -1,4 +1,4 @@
-package com.interview.manager.backend.services.Category;
+package com.interview.manager.backend.services.category;
 
 import com.interview.manager.backend.dto.CategoryDTO;
 import com.interview.manager.backend.models.Category;
@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Map;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -19,11 +19,10 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
 
     @Override
-    public Map<String, CategoryDTO> getAllCategories() {
+    public List<CategoryDTO> getAllCategories() {
         return categoryRepository.findAll().stream()
-                .collect(Collectors.toMap(
-                        category -> String.valueOf(category.getId()), // Assuming Category has an getId() method.
-                        CategoryMapper.INSTANCE::categoryToCategoryDTO));
+                .map(CategoryMapper.INSTANCE::categoryToCategoryDTO)
+                .collect(Collectors.toList());
     }
 
     @Override

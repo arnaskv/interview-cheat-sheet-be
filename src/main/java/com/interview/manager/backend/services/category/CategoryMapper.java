@@ -1,4 +1,4 @@
-package com.interview.manager.backend.services.Category;
+package com.interview.manager.backend.services.category;
 
 import com.interview.manager.backend.dto.CategoryDTO;
 import com.interview.manager.backend.models.Category;

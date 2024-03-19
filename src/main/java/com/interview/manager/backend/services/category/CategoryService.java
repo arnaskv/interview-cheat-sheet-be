@@ -1,14 +1,13 @@
-package com.interview.manager.backend.services.Category;
+package com.interview.manager.backend.services.category;
 
 import com.interview.manager.backend.dto.CategoryDTO;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public interface CategoryService {
 
-    Map<String, CategoryDTO> getAllCategories();
+    List<CategoryDTO> getAllCategories();
 
     Optional<CategoryDTO> getCategoryById(Long id);
     CategoryDTO save(CategoryDTO categoryDTO);

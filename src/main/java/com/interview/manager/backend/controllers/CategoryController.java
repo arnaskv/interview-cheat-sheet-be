@@ -1,7 +1,7 @@
 package com.interview.manager.backend.controllers;
 
 import com.interview.manager.backend.dto.CategoryDTO;
-import com.interview.manager.backend.services.Category.CategoryService;
+import com.interview.manager.backend.services.category.CategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -21,8 +21,8 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping
-    public ResponseEntity<Map<String, CategoryDTO>> getAllCategories() {
-        Map<String, CategoryDTO> categories = categoryService.getAllCategories();
+    public ResponseEntity<List<CategoryDTO>> getAllCategories() {
+        List<CategoryDTO> categories = categoryService.getAllCategories();
         return ResponseEntity.ok(categories);
     }
 
