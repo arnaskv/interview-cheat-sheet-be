@@ -1,29 +1,30 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.2.3'
-	id 'io.spring.dependency-management' version '1.1.4'
+    id 'java'
+    id 'org.springframework.boot' version '3.2.3'
+    id 'io.spring.dependency-management' version '1.1.4'
 }
 
 group = 'com.interview.manager'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	sourceCompatibility = '21'
+    sourceCompatibility = '21'
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	// Spring Boot starters for core functionality
+    // Spring Boot starters for core functionality
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
 
     // Database and Liquibase for database migrations
     runtimeOnly 'org.postgresql:postgresql'
-    // implementation 'org.liquibase:liquibase-core' // Useful tool for database migrations, but required db configuration for now
+    implementation 'org.liquibase:liquibase-core' // Useful tool for database migrations
 
     // Lombok to reduce boilerplate code
     compileOnly libs.lombok
@@ -49,7 +50,7 @@ bootJar {
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+    useJUnitPlatform()
     testLogging {
         events "passed", "skipped", "failed"
     }
