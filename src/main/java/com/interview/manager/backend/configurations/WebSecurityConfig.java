@@ -17,8 +17,9 @@ public class WebSecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers(HttpMethod.GET, "/api/v1/**").permitAll()
+                        .requestMatchers("/api/v1/comment/**").permitAll()
                         .anyRequest().authenticated())
-
+                
                 .formLogin(formLogin -> formLogin
                         .loginProcessingUrl("/login").permitAll())
                 .logout(logout -> logout
