@@ -1,13 +1,13 @@
 package com.interview.manager.backend.services.category;
 
-import com.interview.manager.backend.dto.response.CategoryDTO;
+import com.interview.manager.backend.dto.ResponseCategoryDto;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface CategoryService {
 
-    List<CategoryDTO> getAllCategories();
+    List<ResponseCategoryDto> getAllCategories();
 
-    Optional<CategoryDTO> getCategoryById(Long id);
+    Optional<ResponseCategoryDto> getCategoryById(Long id);
 }

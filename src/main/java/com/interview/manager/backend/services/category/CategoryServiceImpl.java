@@ -1,6 +1,6 @@
 package com.interview.manager.backend.services.category;
 
-import com.interview.manager.backend.dto.response.CategoryDTO;
+import com.interview.manager.backend.dto.ResponseCategoryDto;
 import com.interview.manager.backend.repositories.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,14 +20,14 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
 
     @Override
-    public List<CategoryDTO> getAllCategories() {
+    public List<ResponseCategoryDto> getAllCategories() {
         return categoryRepository.findAll().stream()
                 .map(CATEGORY_MAPPER::categoryToCategoryDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Optional<CategoryDTO> getCategoryById(Long id) {
+    public Optional<ResponseCategoryDto> getCategoryById(Long id) {
         return categoryRepository.findById(id)
                 .map(CATEGORY_MAPPER::categoryToCategoryDTO);
     }
