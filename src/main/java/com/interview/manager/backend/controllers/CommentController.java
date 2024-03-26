@@ -22,9 +22,9 @@ import com.interview.manager.backend.dto.CreateUpdateCommentDto;
 import com.interview.manager.backend.service.CommentService;
 
 @RestController
-@RequestMapping(value = CommentController.COMMENT_ENPOINT)
+@RequestMapping(value = CommentController.COMMENT_ENDPOINT)
 public class CommentController {
-  public static final String COMMENT_ENPOINT = "/api/v1/comment";
+  public static final String COMMENT_ENDPOINT = "/api/v1/comment";
  
   @Autowired
   CommentService commentService;
@@ -43,7 +43,7 @@ public class CommentController {
   @PostMapping
   public ResponseEntity<CommentDto> createComment(@RequestBody CreateUpdateCommentDto comment) {
     CommentDto createdComment = commentService.createComment(comment);
-    URI resourceUrl = URI.create(String.format(resourceUrlFormat, COMMENT_ENPOINT, createdComment.getId()));
+    URI resourceUrl = URI.create(String.format(resourceUrlFormat, COMMENT_ENDPOINT, createdComment.getId()));
     return ResponseEntity.created(resourceUrl).body(createdComment);
   }
 

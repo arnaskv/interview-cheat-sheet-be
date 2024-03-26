@@ -9,12 +9,12 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
-    show-sql: false
+    show-sql: true
     open-in-view: false
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-#   liquibase: # for future use in the project
-#     change-log: classpath:db/changelog-master.xml
-#     contexts: test
-#     test-rollback-on-update: true
+#  liquibase: # for future use in the project
+#    change-log: classpath:db/changelog-master.xml
+#    contexts: test
+#    test-rollback-on-update: true
