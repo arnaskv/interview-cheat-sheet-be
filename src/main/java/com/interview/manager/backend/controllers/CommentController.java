@@ -33,7 +33,7 @@ public class CommentController {
   private String resourceUrlFormat;
 
   @GetMapping("/{id}")
-  public ResponseEntity<CommentDto>  getCommentById(@PathVariable UUID id) {
+  public ResponseEntity<CommentDto> getCommentById(@PathVariable UUID id) {
     return commentService
       .getById(id)
       .map(comment -> ResponseEntity.ok(comment))
