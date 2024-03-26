@@ -19,27 +19,25 @@ public class CommentService {
 
   @Autowired
   CommentMapper commentMapper;
-
+  
   public Optional<CommentDto> getById(UUID id) {
-    return commentRepository.getById(id)
-      .map(commentMapper::map);
+      return commentRepository.findById(id)
+        .map(commentMapper::map);
+    }
+    
+    public CommentDto createComment(CreateUpdateCommentDto createUpdateCommentDto) {
+        Comment newComment = CommentMapper.map(createUpdateCommentDto);
+    newComment = commentRepository.save(newComment);
+    return this.getById(newComment.getId()).orElseThrow(IllegalStateException::new);
   }
-
-  public CommentDto createComment(CreateUpdateCommentDto createUpdateCommentDto) {
-    Comment newComment = CommentMapper.map(createUpdateCommentDto);
-    UUID newId = UUID.randomUUID();
-    newComment.setId(newId);
-    commentRepository.insert(newComment);
-    return this.getById(newId).orElseThrow(IllegalStateException::new);
-  }
-
+  
   public void updateComment(UUID id, CreateUpdateCommentDto createUpdateCommentDto) {
     Comment updatedComment = CommentMapper.map(createUpdateCommentDto);
     updatedComment.setId(id);
-    commentRepository.update(updatedComment);
+    commentRepository.save(updatedComment);
   }
-
+  
   public void deleteComment(UUID id) {
-    commentRepository.delete(id);
+    commentRepository.deleteById(id);
   }
 }
