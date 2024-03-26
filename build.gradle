@@ -34,6 +34,9 @@ dependencies {
     annotationProcessor libs.mapstruct.processor
     annotationProcessor libs.lombok.mapstruct.binding
 
+    // Hibernate Validation Engine
+    implementation libs.hibernate.validator
+
     // Spring Boot starters for testing
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
