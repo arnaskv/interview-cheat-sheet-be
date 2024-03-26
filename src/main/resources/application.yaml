@@ -2,7 +2,7 @@ spring:
     application:
         name: backend
     datasource:
-        url: jdbc:postgresql://${POSTGRES_HOST:localhost}:5432/${POSTGRES_DB:postgres}?currentSchema=public
+        url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:postgres}?currentSchema=public
         username: ${POSTGRES_USER:dbuser}
         password: ${POSTGRES_PASSWORD:pass}
         driver-class-name: org.postgresql.Driver
@@ -15,6 +15,6 @@ spring:
             hibernate:
                 dialect: org.hibernate.dialect.PostgreSQLDialect
     # liquibase: # for future use in the project
-        # change-log: classpath:db/changelog-master.xml
-        # contexts: test
-        # test-rollback-on-update: true
+    # change-log: classpath:db/changelog-master.xml
+    # contexts: test
+    # test-rollback-on-update: true
