@@ -8,6 +8,9 @@ class BackendApplicationTests {
 
 	@Test
 	void contextLoads() {
+		System.out.println(System.getenv("POSTGRES_HOST"));
+		System.out.println(System.getenv("POSTGRES_DB"));
+		System.out.println(System.getenv("POSTGRES_USER"));
 	}
 
 }

@@ -2,9 +2,9 @@ spring:
     application:
         name: backend
     datasource:
-        url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
-        username: ${POSTGRES_USER}
-        password: ${POSTGRES_PASSWORD}
+        url: jdbc:postgresql://${POSTGRES_HOST:localhost}:5432/${POSTGRES_DB:postgres}?currentSchema=app
+        username: ${POSTGRES_USER:dbuser}
+        password: ${POSTGRES_PASSWORD:pass}
         driver-class-name: org.postgresql.Driver
     jpa:
         hibernate:
