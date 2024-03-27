@@ -1,8 +1,8 @@
-package com.interview.manager.backend.repository;
-
-import com.interview.manager.backend.model.Comment;
+package com.interview.manager.backend.repositories;
 
 import org.springframework.data.repository.CrudRepository;
+
+import com.interview.manager.backend.models.Comment;
 
 import java.util.List;
 import java.util.UUID;

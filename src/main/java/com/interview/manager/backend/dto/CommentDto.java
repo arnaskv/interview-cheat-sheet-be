@@ -16,13 +16,13 @@ import lombok.NoArgsConstructor;
 @Builder(toBuilder = true)
 @Data
 public class CommentDto {
-  @NotNull
-  private UUID id;
-  @NotNull
-  @Size(min = 2, max = 255)
-  private String content;
-  @PastOrPresent
-  private OffsetDateTime dateCreated;
-  @PastOrPresent
-  private OffsetDateTime dateModified;
+    @NotNull
+    private UUID id;
+    @NotNull
+    @Size(min = 2, max = 255)
+    private String content;
+    @PastOrPresent
+    private OffsetDateTime dateCreated;
+    @PastOrPresent
+    private OffsetDateTime dateModified;
 }

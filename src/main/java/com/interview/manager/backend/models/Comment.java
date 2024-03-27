@@ -1,4 +1,4 @@
-package com.interview.manager.backend.model;
+package com.interview.manager.backend.models;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -18,29 +18,29 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "interview_comments", schema = "public")
 public class Comment {
-  @Id
-  @GeneratedValue(strategy = GenerationType.UUID)
-  @Column(nullable = false, updatable = false)
-  private UUID id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(nullable = false, updatable = false)
+    private UUID id;
 
-  @Column(nullable = false, length = 255)
-  private String content;
+    @Column(nullable = false, length = 255)
+    private String content;
 
-  @Column(name = "date_created", nullable = false, updatable = false)
-  private OffsetDateTime dateCreated;
+    @Column(name = "date_created", nullable = false, updatable = false)
+    private OffsetDateTime dateCreated;
 
-  @Column(name = "date_modified", nullable = false)
-  @LastModifiedDate
-  private OffsetDateTime dateModified;
+    @Column(name = "date_modified", nullable = false)
+    @LastModifiedDate
+    private OffsetDateTime dateModified;
 
-  @PrePersist
-  public void onPrePersist() {
-    this.setDateCreated(OffsetDateTime.now());
-    this.setDateModified(OffsetDateTime.now());
-  }
+    @PrePersist
+    public void onPrePersist() {
+        this.setDateCreated(OffsetDateTime.now());
+        this.setDateModified(OffsetDateTime.now());
+    }
 
-  @PreUpdate
-  public void onPreUpdate() {
-    this.setDateModified(OffsetDateTime.now());
-  }
+    @PreUpdate
+    public void onPreUpdate() {
+        this.setDateModified(OffsetDateTime.now());
+    }
 }
