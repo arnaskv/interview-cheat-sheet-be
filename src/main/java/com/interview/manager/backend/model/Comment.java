@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 public class Comment {
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
-  @Column(nullable = false)
+  @Column(nullable = false, updatable = false)
   private UUID id;
 
   @Column(nullable = false, length = 255)
