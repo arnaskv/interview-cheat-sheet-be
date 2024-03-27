@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 public class CommentMapper {
   public static Comment map(CreateUpdateCommentDto createUpdateCommentDto) {
     return Comment.builder()
-      .content(createUpdateCommentDto.getContent())
-      .build();
+            .content(createUpdateCommentDto.getContent())
+            .build();
   }
 
   public CommentDto map(Comment comment) {

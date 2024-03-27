@@ -55,13 +55,3 @@ tasks.named('test') {
         events "passed", "skipped", "failed"
     }
 }
-
-tasks.register("setTestDBVariables") {
-    doLast {
-        System.setProperty("POSTGRES_HOST", "localhost")
-        System.setProperty("POSTGRES_PORT", 5432)
-        System.setProperty("POSTGRES_DB", "test_db")
-        System.setProperty("POSTGRES_USER", "postgres")
-        System.setProperty("POSTGRES_PASSWORD", "password")
-    }
-}

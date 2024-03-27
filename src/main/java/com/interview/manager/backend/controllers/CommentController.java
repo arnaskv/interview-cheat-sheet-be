@@ -1,6 +1,7 @@
 package com.interview.manager.backend.controllers;
 
 import java.net.URI;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,30 +33,19 @@ public class CommentController {
   @Value("${quiz.resource-url-format:%s/%s}")
   private String resourceUrlFormat;
 
+  @GetMapping
+  public ResponseEntity<List<CommentDto>> getAllComments() {
+    List<CommentDto> comments = commentService.getAll();
+    return comments.isEmpty()
+            ? ResponseEntity.notFound().build()
+            : ResponseEntity.ok(comments);
+  }
+
   @GetMapping("/{id}")
   public ResponseEntity<CommentDto> getCommentById(@PathVariable UUID id) {
     return commentService
       .getById(id)
-      .map(comment -> ResponseEntity.ok(comment))
+      .map(ResponseEntity::ok)
       .orElse(ResponseEntity.notFound().build());
-  }
-
-  @PostMapping
-  public ResponseEntity<CommentDto> createComment(@RequestBody CreateUpdateCommentDto comment) {
-    CommentDto createdComment = commentService.createComment(comment);
-    URI resourceUrl = URI.create(String.format(resourceUrlFormat, COMMENT_ENDPOINT, createdComment.getId()));
-    return ResponseEntity.created(resourceUrl).body(createdComment);
-  }
-
-  @PutMapping("/{id}")
-  @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void updateComment(@PathVariable UUID id, @RequestBody CreateUpdateCommentDto comment) {
-    commentService.updateComment(id, comment);
-  }
-
-  @DeleteMapping("/{id}")
-  @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void deleteComment(@PathVariable UUID id) {
-    commentService.deleteComment(id);
   }
 }

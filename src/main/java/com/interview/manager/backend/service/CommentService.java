@@ -2,6 +2,7 @@ package com.interview.manager.backend.service;
 
 import java.util.Optional;
 import java.util.UUID;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,25 +20,16 @@ public class CommentService {
 
   @Autowired
   CommentMapper commentMapper;
-  
+
+  public List<CommentDto> getAll() {
+    return commentRepository.findAll()
+            .stream()
+            .map(commentMapper::map)
+            .toList();
+  }
+
   public Optional<CommentDto> getById(UUID id) {
-      return commentRepository.findById(id)
-        .map(commentMapper::map);
-    }
-    
-    public CommentDto createComment(CreateUpdateCommentDto createUpdateCommentDto) {
-        Comment newComment = CommentMapper.map(createUpdateCommentDto);
-    newComment = commentRepository.save(newComment);
-    return this.getById(newComment.getId()).orElseThrow(IllegalStateException::new);
-  }
-  
-  public void updateComment(UUID id, CreateUpdateCommentDto createUpdateCommentDto) {
-    Comment updatedComment = CommentMapper.map(createUpdateCommentDto);
-    updatedComment.setId(id);
-    commentRepository.save(updatedComment);
-  }
-  
-  public void deleteComment(UUID id) {
-    commentRepository.deleteById(id);
+    return commentRepository.findById(id)
+            .map(commentMapper::map);
   }
 }

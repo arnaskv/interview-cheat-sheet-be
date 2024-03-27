@@ -26,7 +26,7 @@ public class Comment {
   @Column(nullable = false, length = 255)
   private String content;
 
-  @Column(name = "date_created", nullable = false)
+  @Column(name = "date_created", nullable = false, updatable = false)
   private OffsetDateTime dateCreated;
 
   @Column(name = "date_modified", nullable = false)
@@ -35,12 +35,12 @@ public class Comment {
 
   @PrePersist
   public void onPrePersist() {
-    dateCreated = OffsetDateTime.now();
-    dateModified = OffsetDateTime.now();
+    this.setDateCreated(OffsetDateTime.now());
+    this.setDateModified(OffsetDateTime.now());
   }
 
   @PreUpdate
   public void onPreUpdate() {
-    dateModified = OffsetDateTime.now();
+    this.setDateModified(OffsetDateTime.now());
   }
 }
