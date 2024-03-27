@@ -19,8 +19,4 @@ public class InterviewQuestion {
     @NotBlank
     @Size(max = 256)
     private String title;
-
-    @ManyToOne
-    @JoinColumn(name = "interview_id")
-    private Interview interview;
 }

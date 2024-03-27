@@ -2,24 +2,22 @@ package com.interview.manager.backend.services.interviewQuestion;
 
 import com.interview.manager.backend.entities.InterviewQuestion;
 import com.interview.manager.backend.models.InterviewQuestionResponseDto;
-import com.interview.manager.backend.repositories.InterviewRepository;
+import com.interview.manager.backend.repositories.InterviewQuestionRepository;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class InterviewQuestionService {
-    private final InterviewRepository interviewRepository;
+    private final InterviewQuestionRepository interviewQuestionRepository;
 
-    public InterviewQuestionService(InterviewRepository interviewRepository) {
-        this.interviewRepository = interviewRepository;
+    public InterviewQuestionService(InterviewQuestionRepository interviewQuestionRepository) {
+        this.interviewQuestionRepository = interviewQuestionRepository;
     }
 
-    public List<InterviewQuestionResponseDto> findInterviewQuestionsDtoByInterviewId(Long interviewId) {
-        List<InterviewQuestion> interviewQuestions = interviewRepository.findAllByInterviewId(interviewId);
-        return interviewQuestions.stream()
-                .map(InterviewQuestionResponseDto::of)
-                .collect(Collectors.toList());
+    public InterviewQuestionResponseDto findById(Long interviewId) {
+        InterviewQuestion interviewQuestion = interviewQuestionRepository.findById(interviewId).get();
+        return InterviewQuestionResponseDto.builder()
+                .id(interviewQuestion.getId())
+                .title(interviewQuestion.getTitle())
+                .build();
     }
 }

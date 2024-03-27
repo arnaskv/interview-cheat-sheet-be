@@ -15,7 +15,4 @@ public class InterviewQuestionRequestDto {
     @NotBlank
     @Size(max = 50)
     private String title;
-
-//    @NotBlank
-//    private Interview interview;
 }
