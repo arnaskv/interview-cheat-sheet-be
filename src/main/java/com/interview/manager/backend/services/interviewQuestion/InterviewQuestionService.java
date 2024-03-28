@@ -3,15 +3,17 @@ package com.interview.manager.backend.services.interviewQuestion;
 import com.interview.manager.backend.entities.InterviewQuestion;
 import com.interview.manager.backend.models.InterviewQuestionResponseDto;
 import com.interview.manager.backend.repositories.InterviewQuestionRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-@AllArgsConstructor
+import java.util.UUID;
+
+@RequiredArgsConstructor
 @Service
 public class InterviewQuestionService {
     private final InterviewQuestionRepository interviewQuestionRepository;
 
-    public InterviewQuestionResponseDto findById(Long interviewId) {
+    public InterviewQuestionResponseDto findById(UUID interviewId) {
         InterviewQuestion interviewQuestion = interviewQuestionRepository.findById(interviewId).get();
         return InterviewQuestionResponseDto.builder()
                 .id(interviewQuestion.getId())

@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.util.UUID;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -14,7 +16,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder(toBuilder = true)
 public class InterviewQuestionResponseDto extends InterviewQuestionRequestDto {
 
-    private Long id;
+    private UUID id;
 
     public static InterviewQuestionResponseDto of(InterviewQuestion interviewQuestion) {
         return InterviewQuestionResponseDto.builder()
