@@ -36,7 +36,18 @@ dependencies {
     annotationProcessor libs.lombok.mapstruct.binding
 
     // Hibernate Validation Engine
-    implementation libs.hibernate.validator
+    ext {
+        libs = [
+                hibernate: 'version_number'
+                // Other dependencies can be listed here
+        ]
+    }
+
+    // Configure dependencies
+    dependencies {
+        // Hibernate Validation Engine
+        implementation "org.hibernate.validator:hibernate-validator:"
+    }
 
     // Spring Boot starters for testing
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
