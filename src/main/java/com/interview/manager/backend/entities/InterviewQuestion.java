@@ -1,5 +1,6 @@
 package com.interview.manager.backend.entities;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -10,8 +11,6 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.UUID;
-
 @Getter
 @Setter
 @Entity
@@ -20,7 +19,8 @@ public class InterviewQuestion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private UUID id;
+    @Column(nullable = false)
+    private Long id;
 
     @NotBlank
     @Size(max = 256)

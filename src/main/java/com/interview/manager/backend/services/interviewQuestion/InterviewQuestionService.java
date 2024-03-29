@@ -6,14 +6,12 @@ import com.interview.manager.backend.repositories.InterviewQuestionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
-
 @RequiredArgsConstructor
 @Service
 public class InterviewQuestionService {
     private final InterviewQuestionRepository interviewQuestionRepository;
 
-    public InterviewQuestionResponseDto findById(UUID interviewId) {
+    public InterviewQuestionResponseDto findById(Long interviewId) {
         InterviewQuestion interviewQuestion = interviewQuestionRepository.findById(interviewId).get();
         return InterviewQuestionResponseDto.builder()
                 .id(interviewQuestion.getId())
