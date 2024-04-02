@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -19,13 +20,13 @@ import com.interview.manager.backend.dto.CommentDto;
 import com.interview.manager.backend.dto.CreateUpdateCommentDto;
 import com.interview.manager.backend.services.comment.CommentService;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping(value = CommentController.COMMENT_ENDPOINT)
 public class CommentController {
     public static final String COMMENT_ENDPOINT = "/api/v1/comment";
 
-    @Autowired
-    CommentService commentService;
+    private final CommentService commentService;
 
     @Value("${quiz.resource-url-format:%s/%s}")
     private String resourceUrlFormat;
