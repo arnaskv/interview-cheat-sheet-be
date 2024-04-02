@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,13 +14,14 @@ import com.interview.manager.backend.models.Comment;
 import com.interview.manager.backend.repositories.CommentRepository;
 import com.interview.manager.backend.services.comment.mapper.CommentMapper;
 
+@RequiredArgsConstructor
 @Service
 public class CommentService {
-    @Autowired
-    CommentRepository commentRepository;
 
-    @Autowired
-    CommentMapper commentMapper;
+    private final CommentRepository commentRepository;
+
+
+    private final CommentMapper commentMapper;
 
     public List<CommentDto> getAll() {
         return commentRepository.findAll()
