@@ -34,9 +34,7 @@ public class CommentController {
     @GetMapping
     public ResponseEntity<List<CommentDto>> getAllComments() {
         List<CommentDto> comments = commentService.getAll();
-            return comments.isEmpty()
-                ? ResponseEntity.notFound().build()
-                : ResponseEntity.ok(comments);
+        return ResponseEntity.ok(comments);
     }
 
     @GetMapping("/{id}")
