@@ -3,9 +3,9 @@ package com.interview.manager.backend.services.comment;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.interview.manager.backend.dto.CommentDto;
@@ -24,10 +24,9 @@ public class CommentService {
     private final CommentMapper commentMapper;
 
     public List<CommentDto> getAll() {
-        return commentRepository.findAll()
-            .stream()
+        return commentRepository.findAll().stream()
             .map(commentMapper::map)
-            .toList();
+            .collect(Collectors.toList());
     }
 
     public Optional<CommentDto> getById(UUID id) {
