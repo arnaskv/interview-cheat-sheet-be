@@ -1,7 +1,8 @@
 package com.interview.manager.backend.services.interviewQuestion;
 
-import com.interview.manager.backend.entities.InterviewQuestion;
-import com.interview.manager.backend.models.InterviewQuestionResponseDto;
+import com.interview.manager.backend.models.InterviewQuestion;
+import com.interview.manager.backend.dto.InterviewQuestionRequestDto;
+import com.interview.manager.backend.dto.InterviewQuestionResponseDto;
 import com.interview.manager.backend.repositories.InterviewQuestionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,5 +27,13 @@ public class InterviewQuestionService {
                 .stream()
                 .map(InterviewQuestionResponseDto::of)
                 .collect(Collectors.toList());
+    }
+
+    public InterviewQuestionResponseDto createInterviewQuestion(InterviewQuestionRequestDto requestDto) {
+        InterviewQuestion interviewQuestion = new InterviewQuestion();
+        interviewQuestion.setTitle(requestDto.getTitle());
+        InterviewQuestion createdInterviewQuestion = interviewQuestionRepository.save(interviewQuestion);
+
+        return InterviewQuestionResponseDto.of(createdInterviewQuestion);
     }
 }

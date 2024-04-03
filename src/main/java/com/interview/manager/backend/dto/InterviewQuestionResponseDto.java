@@ -1,6 +1,6 @@
-package com.interview.manager.backend.models;
+package com.interview.manager.backend.dto;
 
-import com.interview.manager.backend.entities.InterviewQuestion;
+import com.interview.manager.backend.models.InterviewQuestion;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

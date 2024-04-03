@@ -1,4 +1,4 @@
-package com.interview.manager.backend.models;
+package com.interview.manager.backend.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -13,6 +13,6 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder(toBuilder = true)
 public class InterviewQuestionRequestDto {
     @NotBlank
-    @Size(max = 50)
+    @Size(max = 256)
     private String title;
 }
