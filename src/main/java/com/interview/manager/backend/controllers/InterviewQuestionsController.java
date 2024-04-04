@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -30,22 +31,18 @@ public class InterviewQuestionsController {
         Optional<InterviewQuestionResponseDto> interviewQuestion = interviewQuestionService.findById(id);
         return interviewQuestion
                 .map(ResponseEntity::ok)
-                .orElse(ResponseEntity
-                        .notFound()
-                        .build());
+                .orElseGet(() -> ResponseEntity.ok(new InterviewQuestionResponseDto()));
     }
 
     @GetMapping
     public ResponseEntity<List<InterviewQuestionResponseDto>> getAllInterviewQuestions() {
         List<InterviewQuestionResponseDto> interviewQuestionResponseDto = interviewQuestionService.getAllInterviewQuestions();
-        return interviewQuestionResponseDto.isEmpty()
-                ? ResponseEntity.notFound().build()
-                : ResponseEntity.ok(interviewQuestionResponseDto);
+        return ResponseEntity.ok(interviewQuestionResponseDto);
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public ResponseEntity<InterviewQuestionResponseDto> createInterviewQuestion(@RequestBody InterviewQuestionRequestDto requestDto) {
-        InterviewQuestionResponseDto createdQuestion = interviewQuestionService.createInterviewQuestion(requestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdQuestion);
+    public InterviewQuestionResponseDto createInterviewQuestion(@RequestBody InterviewQuestionRequestDto requestDto) {
+        return interviewQuestionService.createInterviewQuestion(requestDto);
     }
 }
