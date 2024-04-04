@@ -1,15 +1,14 @@
 package com.interview.manager.backend.controllers;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.interview.manager.backend.dto.CommentDto;
 import com.interview.manager.backend.service.CommentService;
@@ -36,5 +35,19 @@ public class CommentController {
       .getById(id)
       .map(ResponseEntity::ok)
       .orElse(ResponseEntity.notFound().build());
+  }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<String> deleteCommentById(@PathVariable UUID id) {
+
+    try {
+      commentService.deleteById(id);
+      return ResponseEntity.ok("Comment deleted successfully");
+    } catch (NoSuchElementException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while deleting a comment");
+    }
+
   }
 }
