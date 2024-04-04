@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.interview.manager.backend.dto.CommentDto;
-import com.interview.manager.backend.dto.CreateUpdateCommentDto;
-import com.interview.manager.backend.model.Comment;
 import com.interview.manager.backend.repository.CommentRepository;
 import com.interview.manager.backend.service.mapper.CommentMapper;
 
