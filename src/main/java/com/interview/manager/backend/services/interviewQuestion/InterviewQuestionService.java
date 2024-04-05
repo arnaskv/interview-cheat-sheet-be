@@ -4,10 +4,12 @@ import com.interview.manager.backend.dto.InterviewQuestionRequestDto;
 import com.interview.manager.backend.dto.InterviewQuestionResponseDto;
 import com.interview.manager.backend.models.InterviewQuestion;
 import com.interview.manager.backend.repositories.InterviewQuestionRepository;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -31,9 +33,17 @@ public class InterviewQuestionService {
                 .collect(Collectors.toList());
     }
 
-    public InterviewQuestionResponseDto createInterviewQuestion(@Valid InterviewQuestionRequestDto requestDto) {
+    public ResponseEntity<InterviewQuestionResponseDto> createInterviewQuestion(InterviewQuestionRequestDto requestDto) {
+
         InterviewQuestion interviewQuestion = MAPPER.requestDtoToInterviewQuestion(requestDto);
         InterviewQuestion createdInterviewQuestion = interviewQuestionRepository.save(interviewQuestion);
-        return InterviewQuestionResponseDto.of(createdInterviewQuestion);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/api/v1/interview-questions")
+                .buildAndExpand(createdInterviewQuestion.getId())
+                .toUri();
+
+        return ResponseEntity.created(location).body(InterviewQuestionResponseDto.of(createdInterviewQuestion));
     }
 }
