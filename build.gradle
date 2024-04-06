@@ -24,7 +24,7 @@ dependencies {
 
     // Database and Liquibase for database migrations
     runtimeOnly 'org.postgresql:postgresql'
-//    implementation 'org.liquibase:liquibase-core' // Useful tool for database migrations, but required db configuration for now
+    implementation 'org.liquibase:liquibase-core'
 
     // Lombok to reduce boilerplate code
     compileOnly libs.lombok
