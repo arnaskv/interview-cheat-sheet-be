@@ -1,4 +1,4 @@
-package com.interview.manager.backend.entities;
+package com.interview.manager.backend.models;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
