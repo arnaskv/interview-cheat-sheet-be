@@ -14,7 +14,7 @@ spring:
         properties:
             hibernate:
                 dialect: org.hibernate.dialect.PostgreSQLDialect
-    # liquibase: # for future use in the project
-    # change-log: classpath:db/changelog-master.xml
-    # contexts: test
-    # test-rollback-on-update: true
+    liquibase:
+        change-log: classpath:db/changelog-master.xml
+        contexts: test
+        test-rollback-on-update: true

@@ -1,5 +1,6 @@
 package com.interview.manager.backend.services.comment;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.List;
@@ -38,5 +39,15 @@ public class CommentService {
         Comment newComment = CommentMapper.map(createUpdateCommentDto);
         newComment = commentRepository.save(newComment);
         return this.getById(newComment.getId()).orElseThrow(IllegalStateException::new);
+    }
+
+    public void deleteById(UUID id) {
+        commentRepository.findById(id)
+            .ifPresentOrElse(
+                comment -> commentRepository.deleteById(id),
+                () -> {
+                    throw new NoSuchElementException("Comment with ID " + id + " not found");
+                }
+            );
     }
 }
