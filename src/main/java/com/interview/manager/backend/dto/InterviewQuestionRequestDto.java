@@ -1,4 +1,4 @@
-package com.interview.manager.backend.models;
+package com.interview.manager.backend.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -12,7 +12,7 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @SuperBuilder(toBuilder = true)
 public class InterviewQuestionRequestDto {
-    @NotBlank
-    @Size(max = 50)
+    @NotBlank(message = "Title should not be blank")
+    @Size(max = 256, min = 1, message = "Title should be between {min} and {max} characters")
     private String title;
 }

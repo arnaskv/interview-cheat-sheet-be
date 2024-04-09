@@ -1,12 +1,16 @@
 package com.interview.manager.backend.controllers;
 
-import com.interview.manager.backend.models.InterviewQuestionResponseDto;
+import com.interview.manager.backend.dto.InterviewQuestionRequestDto;
+import com.interview.manager.backend.dto.InterviewQuestionResponseDto;
 import com.interview.manager.backend.services.interviewQuestion.InterviewQuestionService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,16 +30,17 @@ public class InterviewQuestionsController {
         Optional<InterviewQuestionResponseDto> interviewQuestion = interviewQuestionService.findById(id);
         return interviewQuestion
                 .map(ResponseEntity::ok)
-                .orElse(ResponseEntity
-                        .notFound()
-                        .build());
+                .orElseGet(() -> ResponseEntity.ok(new InterviewQuestionResponseDto()));
     }
 
     @GetMapping
     public ResponseEntity<List<InterviewQuestionResponseDto>> getAllInterviewQuestions() {
         List<InterviewQuestionResponseDto> interviewQuestionResponseDto = interviewQuestionService.getAllInterviewQuestions();
-        return interviewQuestionResponseDto.isEmpty()
-                ? ResponseEntity.notFound().build()
-                : ResponseEntity.ok(interviewQuestionResponseDto);
+        return ResponseEntity.ok(interviewQuestionResponseDto);
+    }
+
+    @PostMapping
+    public ResponseEntity<InterviewQuestionResponseDto> createInterviewQuestion(@Valid @RequestBody InterviewQuestionRequestDto requestDto) {
+        return interviewQuestionService.createInterviewQuestion(requestDto);
     }
 }
