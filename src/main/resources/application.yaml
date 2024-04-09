@@ -2,9 +2,9 @@ spring:
     application:
         name: backend
     datasource:
-        url: jdbc:postgresql://108.142.2.235:5432/gvigaidb?currentSchema=public
-        username: gvigaiuser
-        password: daf34kYmrj
+        url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:postgres}?currentSchema=public
+        username: ${POSTGRES_USER:dbuser}
+        password: ${POSTGRES_PASSWORD:pass}
         driver-class-name: org.postgresql.Driver
     jpa:
         hibernate:
