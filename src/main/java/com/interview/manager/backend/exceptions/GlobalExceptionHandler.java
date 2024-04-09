@@ -16,6 +16,12 @@ public class GlobalExceptionHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
+    @ExceptionHandler(DataValidationException.class)
+    public ResponseEntity<ErrorResponse> handleDataValidationException(DataValidationException ex) {
+        logger.error("Data validation exception occurred: {}", ex.getMessage());
+        return ResponseEntity.badRequest().body(new ErrorResponse(ex.getStatus().getCode(), ex.getMessage()));
+    }
+
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<ErrorResponse> handleNoSuchElementException(NoSuchElementException e) {
         logger.error("NoSuchElementException occurred: {}", e.getMessage());
