@@ -13,7 +13,7 @@ import lombok.Setter;
 import lombok.RequiredArgsConstructor;
 
 @Entity
-@Table(name = "interview_category")
+@Table(name = "interview_categories")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -22,11 +22,11 @@ public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "category_id")
+    @Column(name = "id", nullable = false)
     private Long id;
 
     @NonNull
-    @Column(name = "category_title", length = 256, nullable = false)
+    @Column(name = "title", length = 256, nullable = false)
     private String title;
 
 }

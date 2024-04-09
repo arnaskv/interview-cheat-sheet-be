@@ -18,14 +18,15 @@ public class WebSecurityConfig {
 
     private static final String ALLOWED_ORIGIN = System.getProperty("ALLOWED_ORIGIN", "https://gvigai.devbstaging.com");
     private static final List<String> ALLOWED_METHODS = List.of("GET", "POST", "PATCH", "DELETE");
-    
+
     @Bean
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                .requestMatchers(HttpMethod.GET, "/api/v1/**").permitAll()
+                .requestMatchers(HttpMethod.GET , "/api/v1/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/v1/**").permitAll()
                 .requestMatchers("/api/v1/comment/**").permitAll()
                 .anyRequest().authenticated())
             

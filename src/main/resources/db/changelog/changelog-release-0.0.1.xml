@@ -7,21 +7,35 @@
                         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
                         http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
 
-    <changeSet id="1" author="arnkve">
-        <createTable tableName="interview_comments">
-            <column name="id" type="uuid" defaultValueComputed="gen_random_uuid()">
-                <constraints primaryKey="true" nullable="false"/>
+
+
+    <changeSet id="create_interview_categories_table" author="dzmitry.papkou">
+        <createTable tableName="interview_categories">
+            <column name="id" type="bigserial">
+                <constraints primaryKey="true" nullable="false" />
             </column>
-            <column name="content" type="VARCHAR(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="date_created" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="CURRENT_TIMESTAMP">
+            <column name="title" type="varchar(256)">
                 <constraints nullable="false" />
             </column>
-            <column name="date_modified" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
-            </column>
         </createTable>
+        <rollback>
+            <dropTable tableName="interview_categories" />
+        </rollback>
+    </changeSet>
+
+    <changeSet id="delete_interview_category_table" author="dzmitry.papkou">
+        <comment>Remove and create new table, while not too much data for now</comment>
+        <dropTable tableName="interview_category" />
+        <rollback>
+            <createTable tableName="interview_category">
+                <column name="interview_id" type="bigserial">
+                    <constraints primaryKey="true" nullable="false" />
+                </column>
+                <column name="interview_title" type="varchar(256)">
+                    <constraints nullable="false" />
+                </column>
+            </createTable>
+        </rollback>
     </changeSet>
 
 </databaseChangeLog>
