@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.interview.manager.backend.dto.CommentDto;
-import com.interview.manager.backend.model.Comment;
 import com.interview.manager.backend.repository.CommentRepository;
 import com.interview.manager.backend.service.mapper.CommentMapper;
 
@@ -34,12 +33,12 @@ public class CommentService {
   }
 
   public void deleteById(UUID id) {
-    Optional<Comment> comment = commentRepository.findById(id);
-
-    if(comment.isPresent()) {
-      commentRepository.deleteById(id);
-    } else {
-      throw new NoSuchElementException("Comment with ID " + id + " not found");
-    }
+    commentRepository.findById(id)
+            .ifPresentOrElse(
+                    comment -> commentRepository.deleteById(id),
+                    () -> {
+                      throw new NoSuchElementException("Comment with ID " + id + " not found");
+                    }
+            );
   }
 }
