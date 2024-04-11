@@ -9,6 +9,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class WebSecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                .requestMatchers(HttpMethod.GET , "/api/v1/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/v1/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/v1/**").permitAll()
                 .requestMatchers(HttpMethod.DELETE, "/api/v1/**").permitAll()
                 .requestMatchers("/api/v1/comment/**").permitAll()
