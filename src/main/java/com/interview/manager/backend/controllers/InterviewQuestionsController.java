@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,8 +30,8 @@ public class InterviewQuestionsController {
     public ResponseEntity<InterviewQuestionResponseDto> getInterviewQuestions(@PathVariable Long id) {
         Optional<InterviewQuestionResponseDto> interviewQuestion = interviewQuestionService.findById(id);
         return interviewQuestion
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.ok(new InterviewQuestionResponseDto()));
+            .map(ResponseEntity::ok)
+            .orElseGet(() -> ResponseEntity.ok(new InterviewQuestionResponseDto()));
     }
 
     @GetMapping
@@ -42,5 +43,11 @@ public class InterviewQuestionsController {
     @PostMapping
     public ResponseEntity<InterviewQuestionResponseDto> createInterviewQuestion(@Valid @RequestBody InterviewQuestionRequestDto requestDto) {
         return interviewQuestionService.createInterviewQuestion(requestDto);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteInterviewQuestionByid(@Valid @PathVariable Long id) {
+        interviewQuestionService.deleteInterviewQuestionById(id);
+        return ResponseEntity.noContent().build();
     }
 }

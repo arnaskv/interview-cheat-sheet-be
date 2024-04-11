@@ -7,10 +7,12 @@ import com.interview.manager.backend.repositories.InterviewQuestionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -27,10 +29,10 @@ public class InterviewQuestionService {
 
     public List<InterviewQuestionResponseDto> getAllInterviewQuestions() {
         return interviewQuestionRepository
-                .findAll()
-                .stream()
-                .map(InterviewQuestionResponseDto::of)
-                .collect(Collectors.toList());
+            .findAll()
+            .stream()
+            .map(InterviewQuestionResponseDto::of)
+            .collect(Collectors.toList());
     }
 
     public ResponseEntity<InterviewQuestionResponseDto> createInterviewQuestion(InterviewQuestionRequestDto requestDto) {
@@ -39,11 +41,22 @@ public class InterviewQuestionService {
         InterviewQuestion createdInterviewQuestion = interviewQuestionRepository.save(interviewQuestion);
 
         URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/api/v1/interview-questions")
-                .buildAndExpand(createdInterviewQuestion.getId())
-                .toUri();
+            .fromCurrentRequest()
+            .path("/api/v1/interview-questions")
+            .buildAndExpand(createdInterviewQuestion.getId())
+            .toUri();
 
         return ResponseEntity.created(location).body(InterviewQuestionResponseDto.of(createdInterviewQuestion));
+    }
+
+    @Transactional
+    public void deleteInterviewQuestionById(Long id) {
+        interviewQuestionRepository.findById(id)
+            .ifPresentOrElse(
+                interviewQuestion -> interviewQuestionRepository.deleteById(id),
+                () -> {
+                    throw new NoSuchElementException("Interview question with an ID " + id + " not found");
+                }
+            );
     }
 }
