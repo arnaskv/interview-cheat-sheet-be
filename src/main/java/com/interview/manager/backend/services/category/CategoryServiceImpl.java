@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -53,5 +54,17 @@ public class CategoryServiceImpl implements CategoryService {
         }
         Category category = CATEGORY_MAPPER.requestCategoryDTOToCategory(requestCategoryDTO);
         return CATEGORY_MAPPER.categoryToResponseCategoryDTO(categoryRepository.save(category));
+    }
+
+    @Override
+    @Transactional
+    public void deleteCategoryById(Long id) {
+        categoryRepository.findById(id)
+            .ifPresentOrElse(
+                category -> categoryRepository.deleteById(id),
+                () -> {
+                    throw new NoSuchElementException("Category with ID " + id + " not found");
+                }
+            );
     }
 }
