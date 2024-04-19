@@ -28,6 +28,7 @@ public class WebSecurityConfig {
             .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                 .requestMatchers(HttpMethod.GET, "/api/v1/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/v1/**").permitAll()
+                .requestMatchers(HttpMethod.PATCH, "/api/v1/**").permitAll()
                 .requestMatchers(HttpMethod.DELETE, "/api/v1/**").permitAll()
                 .requestMatchers("/api/v1/comment/**").permitAll()
                 .anyRequest().authenticated())

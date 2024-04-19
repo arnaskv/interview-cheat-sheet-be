@@ -1,5 +1,6 @@
 package com.interview.manager.backend.services.interviewQuestion;
 
+import com.interview.manager.backend.dto.InterviewQuestionEditRequestDto;
 import com.interview.manager.backend.dto.InterviewQuestionRequestDto;
 import com.interview.manager.backend.dto.InterviewQuestionResponseDto;
 import com.interview.manager.backend.models.InterviewQuestion;
@@ -47,6 +48,21 @@ public class InterviewQuestionService {
             .toUri();
 
         return ResponseEntity.created(location).body(InterviewQuestionResponseDto.of(createdInterviewQuestion));
+    }
+
+    public ResponseEntity<InterviewQuestionResponseDto> editInterviewQuestion(InterviewQuestionEditRequestDto requestDto) {
+        Optional<InterviewQuestion> interviewQuestion = interviewQuestionRepository.findById(requestDto.getId());
+        interviewQuestion.ifPresentOrElse(
+            question -> {
+                question.setTitle(requestDto.getTitle());
+                interviewQuestionRepository.save(question);
+            },
+            () -> {
+                throw new NoSuchElementException("Question with ID " + requestDto.getId() + " not found");
+            }
+        );
+
+        return ResponseEntity.ok().body(InterviewQuestionResponseDto.of(interviewQuestion.get()));
     }
 
     @Transactional
