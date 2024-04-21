@@ -15,11 +15,13 @@ import lombok.experimental.SuperBuilder;
 public class InterviewQuestionResponseDto extends InterviewQuestionRequestDto {
 
     private Long id;
+    //private String categoryTitle;
 
     public static InterviewQuestionResponseDto of(InterviewQuestion interviewQuestion) {
         return InterviewQuestionResponseDto.builder()
                 .id(interviewQuestion.getId())
                 .title(interviewQuestion.getTitle())
+                .categoryId(interviewQuestion.getCategoryId())
                 .build();
     }
 }

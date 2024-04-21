@@ -25,4 +25,6 @@ public class InterviewQuestion {
     @NotBlank
     @Size(max = 256)
     private String title;
+
+    private Long categoryId;
 }
