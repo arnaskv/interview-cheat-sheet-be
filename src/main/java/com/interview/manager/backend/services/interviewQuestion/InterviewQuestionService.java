@@ -11,12 +11,9 @@ import com.interview.manager.backend.types.DataValidation;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -44,31 +41,15 @@ public class InterviewQuestionService {
             .collect(Collectors.toList());
     }
 
-    public ResponseEntity<InterviewQuestionResponseDto> createInterviewQuestion(InterviewQuestionRequestDto requestDto) {
+    public InterviewQuestionResponseDto createInterviewQuestion(InterviewQuestionRequestDto requestDto) {
 
-        if (requestDto.getCategoryId() == null) {
-            logger.error("Category id is required");
-            throw new DataValidationException(DataValidation.Status.MISSING_DATA);
-        }
-
-        Optional<Category> category = categoryRepository.findById(requestDto.getCategoryId());
-        if (category.isEmpty()) {
-            logger.error("Category not found");
-            throw new DataValidationException(DataValidation.Status.NOT_FOUND);
-        }
+        Category category = categoryRepository.findById(requestDto.getCategoryId())
+            .orElseThrow(() -> new DataValidationException(DataValidation.Status.NOT_FOUND, "Category not found"));
 
         InterviewQuestion interviewQuestion = MAPPER.requestDtoToInterviewQuestion(requestDto);
-        //Maybe there is a better way to map this
-        category.ifPresent(interviewQuestion::setCategory);
-        InterviewQuestion createdInterviewQuestion = interviewQuestionRepository.save(interviewQuestion);
+        interviewQuestion.setCategory(category);
 
-        URI location = ServletUriComponentsBuilder
-            .fromCurrentRequest()
-            .path("/api/v1/interview-questions")
-            .buildAndExpand(createdInterviewQuestion.getId())
-            .toUri();
-
-        return ResponseEntity.created(location).body(InterviewQuestionResponseDto.of(createdInterviewQuestion));
+        return MAPPER.questionToResponseDto(interviewQuestionRepository.save(interviewQuestion));
     }
 
     @Transactional

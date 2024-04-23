@@ -21,9 +21,7 @@
             </column>
         </addColumn>
         <rollback>
-            <dropColumn tableName="interview_questions">
-                <column name="category_id"/>
-            </dropColumn>
+            <dropColumn tableName="interview_questions" columnName="category_id"/>
         </rollback>
     </changeSet>
 
