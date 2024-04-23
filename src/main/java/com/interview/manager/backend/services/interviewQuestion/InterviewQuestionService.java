@@ -5,12 +5,9 @@ import com.interview.manager.backend.dto.InterviewQuestionResponseDto;
 import com.interview.manager.backend.models.InterviewQuestion;
 import com.interview.manager.backend.repositories.InterviewQuestionRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -35,18 +32,11 @@ public class InterviewQuestionService {
             .collect(Collectors.toList());
     }
 
-    public ResponseEntity<InterviewQuestionResponseDto> createInterviewQuestion(InterviewQuestionRequestDto requestDto) {
-
+    @Transactional
+    public InterviewQuestionResponseDto createInterviewQuestion(InterviewQuestionRequestDto requestDto) {
         InterviewQuestion interviewQuestion = MAPPER.requestDtoToInterviewQuestion(requestDto);
         InterviewQuestion createdInterviewQuestion = interviewQuestionRepository.save(interviewQuestion);
-
-        URI location = ServletUriComponentsBuilder
-            .fromCurrentRequest()
-            .path("/api/v1/interview-questions")
-            .buildAndExpand(createdInterviewQuestion.getId())
-            .toUri();
-
-        return ResponseEntity.created(location).body(InterviewQuestionResponseDto.of(createdInterviewQuestion));
+        return InterviewQuestionResponseDto.of(createdInterviewQuestion);
     }
 
     @Transactional

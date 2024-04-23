@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,7 +44,15 @@ public class InterviewQuestionsController {
 
     @PostMapping
     public ResponseEntity<InterviewQuestionResponseDto> createInterviewQuestion(@Valid @RequestBody InterviewQuestionRequestDto requestDto) {
-        return interviewQuestionService.createInterviewQuestion(requestDto);
+        InterviewQuestionResponseDto responseDto = interviewQuestionService.createInterviewQuestion(requestDto);
+
+        URI location = ServletUriComponentsBuilder
+            .fromCurrentRequest()
+            .path("/api/v1/interview-questions/{id}")
+            .buildAndExpand(responseDto.getId())
+            .toUri();
+
+        return ResponseEntity.created(location).body(responseDto);
     }
 
     @DeleteMapping("/{id}")
