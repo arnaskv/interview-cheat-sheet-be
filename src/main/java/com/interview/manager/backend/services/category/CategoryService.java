@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface CategoryService {
 
-    List<ResponseCategoryDto> getAllCategories();
+    List<ResponseCategoryDto> getAllCategoriesReversed();
 
     Optional<ResponseCategoryDto> getCategoryById(Long id);
 
