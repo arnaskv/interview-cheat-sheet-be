@@ -2,9 +2,15 @@ package com.interview.manager.backend.services.interviewQuestion;
 
 import com.interview.manager.backend.dto.InterviewQuestionRequestDto;
 import com.interview.manager.backend.dto.InterviewQuestionResponseDto;
+import com.interview.manager.backend.exceptions.DataValidationException;
+import com.interview.manager.backend.models.Category;
 import com.interview.manager.backend.models.InterviewQuestion;
+import com.interview.manager.backend.repositories.CategoryRepository;
 import com.interview.manager.backend.repositories.InterviewQuestionRepository;
+import com.interview.manager.backend.types.DataValidation;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +26,10 @@ import java.util.stream.Collectors;
 @Service
 public class InterviewQuestionService {
     private final InterviewQuestionRepository interviewQuestionRepository;
+    private final CategoryRepository categoryRepository;
     private static final InterviewQuestionMapper MAPPER = InterviewQuestionMapper.INSTANCE;
+
+    private static final Logger logger = LoggerFactory.getLogger(InterviewQuestion.class);
 
     public Optional<InterviewQuestionResponseDto> findById(Long interviewId) {
         Optional<InterviewQuestion> optionalInterviewQuestion = interviewQuestionRepository.findById(interviewId);
@@ -37,7 +46,20 @@ public class InterviewQuestionService {
 
     public ResponseEntity<InterviewQuestionResponseDto> createInterviewQuestion(InterviewQuestionRequestDto requestDto) {
 
+        if (requestDto.getCategoryId() == null) {
+            logger.error("Category id is required");
+            throw new DataValidationException(DataValidation.Status.MISSING_DATA);
+        }
+
+        Optional<Category> category = categoryRepository.findById(requestDto.getCategoryId());
+        if (category.isEmpty()) {
+            logger.error("Category not found");
+            throw new DataValidationException(DataValidation.Status.NOT_FOUND);
+        }
+
         InterviewQuestion interviewQuestion = MAPPER.requestDtoToInterviewQuestion(requestDto);
+        //Maybe there is a better way to map this
+        category.ifPresent(interviewQuestion::setCategory);
         InterviewQuestion createdInterviewQuestion = interviewQuestionRepository.save(interviewQuestion);
 
         URI location = ServletUriComponentsBuilder
