@@ -53,19 +53,13 @@ public class InterviewQuestionService {
         return MAPPER.questionToResponseDto(interviewQuestionRepository.save(interviewQuestion));
     }
 
-    public ResponseEntity<InterviewQuestionResponseDto> editInterviewQuestion(InterviewQuestionEditRequestDto requestDto) {
+    public InterviewQuestionResponseDto editInterviewQuestion(InterviewQuestionEditRequestDto requestDto) {
         Optional<InterviewQuestion> interviewQuestion = interviewQuestionRepository.findById(requestDto.getId());
-        interviewQuestion.ifPresentOrElse(
-            question -> {
-                question.setTitle(requestDto.getTitle());
-                interviewQuestionRepository.save(question);
-            },
-            () -> {
-                throw new NoSuchElementException("Question with ID " + requestDto.getId() + " not found");
-            }
-        );
-
-        return ResponseEntity.ok().body(InterviewQuestionResponseDto.of(interviewQuestion.get()));
+        return interviewQuestion.map(question -> {
+            question.setTitle(requestDto.getTitle());
+            interviewQuestionRepository.save(question);
+            return MAPPER.questionToResponseDto(question);
+        }).orElseThrow(() -> new NoSuchElementException("Question with ID " + requestDto.getId() + " not found"));
     }
 
     @Transactional

@@ -65,6 +65,7 @@ public class InterviewQuestionsController {
 
     @PatchMapping
     public ResponseEntity<InterviewQuestionResponseDto> editInterviewQuestion(@Valid @RequestBody InterviewQuestionEditRequestDto requestDto) {
-        return interviewQuestionService.editInterviewQuestion(requestDto);
+        var updatedQuestion = interviewQuestionService.editInterviewQuestion(requestDto);
+        return ResponseEntity.ok().body(updatedQuestion);
     }
 }
