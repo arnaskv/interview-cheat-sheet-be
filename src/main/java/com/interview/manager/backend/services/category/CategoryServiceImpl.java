@@ -66,7 +66,7 @@ public class CategoryServiceImpl implements CategoryService {
             category.setTitle(requestCategoryDTO.getTitle());
             categoryRepository.save(category);
             return CATEGORY_MAPPER.categoryToResponseCategoryDTO(category);
-        }).orElseThrow(() -> new NoSuchElementException("Question with ID " + requestCategoryDTO.getId() + " not found"));
+        }).orElseThrow(() -> new NoSuchElementException("Category with ID " + requestCategoryDTO.getId() + " not found"));
     }
 
     @Override
