@@ -39,21 +39,19 @@ public class CommentController {
 
     @GetMapping("/comments/{id}")
     public ResponseEntity<CommentResponseDto> getCommentById(@Validated @PathVariable UUID id) {
-        return commentService
-            .getById(id)
-            .map(ResponseEntity::ok)
-            .orElse(ResponseEntity.notFound().build());
+        CommentResponseDto comment = commentService.getById(id);
+        return ResponseEntity.ok(comment);
     }
 
     @GetMapping("interview-questions/{questionId}/comments")
-    public ResponseEntity<List<CommentResponseDto>> getCommentsByQuestionId(@PathVariable Long questionId) {
+    public ResponseEntity<List<CommentResponseDto>> getAllCommentsByQuestionId(@PathVariable Long questionId) {
         List<CommentResponseDto> comments = commentService.getAllByQuestionId(questionId);
         return ResponseEntity.ok(comments);
     }
 
     @PostMapping("interview-questions/{questionId}/comments")
     public ResponseEntity<CommentResponseDto> createComment(@PathVariable Long questionId, @RequestBody CommentRequestDto comment) {
-        CommentResponseDto createdComment = commentService.createComment(questionId, comment);
+        CommentResponseDto createdComment = commentService.create(questionId, comment);
         URI resourceUrl = URI.create(String.format(resourceUrlFormat, BASE_ENDPOINT + "/comments", createdComment.getId()));
         return ResponseEntity.created(resourceUrl).body(createdComment);
     }
