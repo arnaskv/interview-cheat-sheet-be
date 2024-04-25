@@ -35,7 +35,7 @@ public class CategoryController {
 
     @GetMapping
     public List<ResponseCategoryDto> getAllCategories() {
-        return categoryService.getAllCategories();
+        return categoryService.getAllCategoriesReversed();
     }
 
     @GetMapping("/{id}")

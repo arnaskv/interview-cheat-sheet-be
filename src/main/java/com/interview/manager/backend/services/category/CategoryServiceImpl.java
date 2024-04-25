@@ -31,8 +31,9 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
 
     @Override
-    public List<ResponseCategoryDto> getAllCategories() {
-        return categoryRepository.findAll().stream()
+    public List<ResponseCategoryDto> getAllCategoriesReversed() {
+        List<Category> categories = categoryRepository.findAllByOrderByIdDesc();
+        return categories.stream()
                 .map(CATEGORY_MAPPER::categoryToResponseCategoryDTO)
                 .collect(Collectors.toList());
     }
