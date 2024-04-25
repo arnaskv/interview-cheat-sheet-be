@@ -16,6 +16,10 @@
                                  referencedTableName="interview_categories"
                                  referencedColumnNames="id"
                                  onDelete="CASCADE"/>
+        <rollback>
+            <dropForeignKeyConstraint baseTableName="interview_questions"
+                                      constraintName="fk_question_category"/>
+        </rollback>
     </changeSet>
 
 </databaseChangeLog>
