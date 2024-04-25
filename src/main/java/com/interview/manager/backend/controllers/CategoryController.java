@@ -1,16 +1,18 @@
 package com.interview.manager.backend.controllers;
 
-import com.interview.manager.backend.dto.RequestCategoryDTO;
+import com.interview.manager.backend.dto.RequestCategoryDto;
+import com.interview.manager.backend.dto.RequestEditCategoryDto;
 import com.interview.manager.backend.dto.ResponseCategoryDto;
 import com.interview.manager.backend.services.category.CategoryService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,7 +23,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RestController
@@ -45,7 +46,7 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseCategoryDto> createCategory(@Valid @RequestBody RequestCategoryDTO requestCategoryDTO) {
+    public ResponseEntity<ResponseCategoryDto> createCategory(@Valid @RequestBody RequestCategoryDto requestCategoryDTO) {
         ResponseCategoryDto categoryResponse = categoryService.createCategory(requestCategoryDTO);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -53,6 +54,12 @@ public class CategoryController {
                 .buildAndExpand(categoryResponse.getId())
                 .toUri();
         return ResponseEntity.created(location).body(categoryResponse);
+    }
+
+    @PatchMapping
+    public ResponseEntity<ResponseCategoryDto> editCategory(@Valid @RequestBody RequestEditCategoryDto editCategoryDto) {
+        ResponseCategoryDto updatedCategory = categoryService.editCategory(editCategoryDto);
+        return ResponseEntity.ok(updatedCategory);
     }
 
     @DeleteMapping("/{id}")

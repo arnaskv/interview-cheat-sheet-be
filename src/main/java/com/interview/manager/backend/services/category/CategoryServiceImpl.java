@@ -1,6 +1,7 @@
 package com.interview.manager.backend.services.category;
 
-import com.interview.manager.backend.dto.RequestCategoryDTO;
+import com.interview.manager.backend.dto.RequestCategoryDto;
+import com.interview.manager.backend.dto.RequestEditCategoryDto;
 import com.interview.manager.backend.dto.ResponseCategoryDto;
 import com.interview.manager.backend.exceptions.DataValidationException;
 import com.interview.manager.backend.models.Category;
@@ -43,8 +44,8 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    @Transactional(readOnly = false, rollbackFor = DataValidationException.class)
-    public ResponseCategoryDto createCategory(RequestCategoryDTO requestCategoryDTO) {
+    @Transactional(rollbackFor = DataValidationException.class)
+    public ResponseCategoryDto createCategory(RequestCategoryDto requestCategoryDTO) {
         if (requestCategoryDTO.getTitle() == null || requestCategoryDTO.getTitle().isBlank()) {
             logger.error("Title is missing.");
             throw new DataValidationException(DataValidation.Status.MISSING_DATA);
@@ -54,6 +55,17 @@ public class CategoryServiceImpl implements CategoryService {
         }
         Category category = CATEGORY_MAPPER.requestCategoryDTOToCategory(requestCategoryDTO);
         return CATEGORY_MAPPER.categoryToResponseCategoryDTO(categoryRepository.save(category));
+    }
+
+    @Override
+    @Transactional
+    public ResponseCategoryDto editCategory(RequestEditCategoryDto requestCategoryDTO) {
+        Optional<Category> optionalCategory = categoryRepository.findById(requestCategoryDTO.getId());
+        return optionalCategory.map(category -> {
+            category.setTitle(requestCategoryDTO.getTitle());
+            categoryRepository.save(category);
+            return CATEGORY_MAPPER.categoryToResponseCategoryDTO(category);
+        }).orElseThrow(() -> new NoSuchElementException("Question with ID " + requestCategoryDTO.getId() + " not found"));
     }
 
     @Override
