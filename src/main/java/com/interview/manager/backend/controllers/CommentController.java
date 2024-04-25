@@ -16,45 +16,51 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.interview.manager.backend.dto.CommentDto;
-import com.interview.manager.backend.dto.CreateUpdateCommentDto;
+import com.interview.manager.backend.dto.CommentResponseDto;
+import com.interview.manager.backend.dto.CommentRequestDto;
 import com.interview.manager.backend.services.comment.CommentService;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = CommentController.COMMENT_ENDPOINT)
+@RequestMapping(value = CommentController.BASE_ENDPOINT)
 public class CommentController {
-    public static final String COMMENT_ENDPOINT = "/api/v1/comment";
+    public static final String BASE_ENDPOINT = "/api/v1";
 
     private final CommentService commentService;
 
     @Value("${quiz.resource-url-format:%s/%s}")
     private String resourceUrlFormat;
 
-    @GetMapping
-    public ResponseEntity<List<CommentDto>> getAllComments() {
-        List<CommentDto> comments = commentService.getAll();
+    @GetMapping("/comments")
+    public ResponseEntity<List<CommentResponseDto>> getAllComments() {
+        List<CommentResponseDto> comments = commentService.getAll();
         return ResponseEntity.ok(comments);
     }
 
-
-  @DeleteMapping("/{id}")
-  public ResponseEntity<Void> deleteCommentById(@PathVariable UUID id) {
-    commentService.deleteById(id);
-    return ResponseEntity.noContent().build();
-  }
-    @GetMapping("/{id}")
-    public ResponseEntity<CommentDto> getCommentById(@Validated @PathVariable UUID id) {
+    @GetMapping("/comments/{id}")
+    public ResponseEntity<CommentResponseDto> getCommentById(@Validated @PathVariable UUID id) {
         return commentService
             .getById(id)
             .map(ResponseEntity::ok)
             .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping
-    public ResponseEntity<CommentDto> createComment(@RequestBody CreateUpdateCommentDto comment) {
-        CommentDto createdComment = commentService.createComment(comment);
-        URI resourceUrl = URI.create(String.format(resourceUrlFormat, COMMENT_ENDPOINT, createdComment.getId()));
+    @GetMapping("interview-questions/{questionId}/comments")
+    public ResponseEntity<List<CommentResponseDto>> getCommentsByQuestionId(@PathVariable Long questionId) {
+        List<CommentResponseDto> comments = commentService.getAllByQuestionId(questionId);
+        return ResponseEntity.ok(comments);
+    }
+
+    @PostMapping("interview-questions/{questionId}/comments")
+    public ResponseEntity<CommentResponseDto> createComment(@PathVariable Long questionId, @RequestBody CommentRequestDto comment) {
+        CommentResponseDto createdComment = commentService.createComment(questionId, comment);
+        URI resourceUrl = URI.create(String.format(resourceUrlFormat, BASE_ENDPOINT + "/comments", createdComment.getId()));
         return ResponseEntity.created(resourceUrl).body(createdComment);
+    }
+
+    @DeleteMapping("/comments/{id}")
+        public ResponseEntity<Void> deleteCommentById(@PathVariable UUID id) {
+        commentService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }

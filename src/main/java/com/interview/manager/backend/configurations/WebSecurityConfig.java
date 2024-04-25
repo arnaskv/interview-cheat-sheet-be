@@ -29,7 +29,6 @@ public class WebSecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/v1/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/v1/**").permitAll()
                 .requestMatchers(HttpMethod.DELETE, "/api/v1/**").permitAll()
-                .requestMatchers("/api/v1/comment/**").permitAll()
                 .anyRequest().authenticated())
 
             .formLogin(formLogin -> formLogin

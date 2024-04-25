@@ -6,11 +6,13 @@ import java.util.UUID;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.interview.manager.backend.models.InterviewQuestion;
+import com.interview.manager.backend.repositories.InterviewQuestionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import com.interview.manager.backend.dto.CommentDto;
-import com.interview.manager.backend.dto.CreateUpdateCommentDto;
+import com.interview.manager.backend.dto.CommentResponseDto;
+import com.interview.manager.backend.dto.CommentRequestDto;
 import com.interview.manager.backend.models.Comment;
 import com.interview.manager.backend.repositories.CommentRepository;
 import com.interview.manager.backend.services.comment.mapper.CommentMapper;
@@ -23,22 +25,34 @@ public class CommentService {
 
 
     private final CommentMapper commentMapper;
+    private final InterviewQuestionRepository interviewQuestionRepository;
 
-    public List<CommentDto> getAll() {
+    public List<CommentResponseDto> getAll() {
         return commentRepository.findAll().stream()
             .map(commentMapper::map)
             .collect(Collectors.toList());
     }
 
-    public Optional<CommentDto> getById(UUID id) {
+    public Optional<CommentResponseDto> getById(UUID id) {
         return commentRepository.findById(id)
             .map(commentMapper::map);
     }
 
-    public CommentDto createComment(CreateUpdateCommentDto createUpdateCommentDto) {
-        Comment newComment = CommentMapper.map(createUpdateCommentDto);
-        newComment = commentRepository.save(newComment);
-        return this.getById(newComment.getId()).orElseThrow(IllegalStateException::new);
+    public List<CommentResponseDto> getAllByQuestionId(Long questionId) {
+        return commentRepository.getAllByQuestionId(questionId).stream()
+            .map(commentMapper::map)
+            .collect(Collectors.toList());
+    }
+
+    public CommentResponseDto createComment(Long questionId, CommentRequestDto CommentRequestDto) throws IllegalStateException {
+        InterviewQuestion question = interviewQuestionRepository.findById(questionId)
+            .orElseThrow(() -> new IllegalStateException("Question not found with ID: " + questionId));
+
+        Comment comment = CommentMapper.map(CommentRequestDto, question);
+
+        comment = commentRepository.save(comment);
+
+        return this.getById(comment.getId()).orElseThrow(IllegalStateException::new);
     }
 
     public void deleteById(UUID id) {
