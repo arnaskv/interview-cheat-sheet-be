@@ -63,11 +63,14 @@ public class CategoryServiceImpl implements CategoryService {
     public ResponseCategoryDto editCategory(RequestEditCategoryDto requestCategoryDTO) {
         Optional<Category> optionalCategory = categoryRepository.findById(requestCategoryDTO.getId());
         return optionalCategory.map(category -> {
-            category.setTitle(requestCategoryDTO.getTitle());
-            categoryRepository.save(category);
+            if (!category.getTitle().equals(requestCategoryDTO.getTitle())) {
+                category.setTitle(requestCategoryDTO.getTitle());
+                categoryRepository.save(category);
+            }
             return CATEGORY_MAPPER.categoryToResponseCategoryDTO(category);
         }).orElseThrow(() -> new NoSuchElementException("Category with ID " + requestCategoryDTO.getId() + " not found"));
     }
+
 
     @Override
     @Transactional
