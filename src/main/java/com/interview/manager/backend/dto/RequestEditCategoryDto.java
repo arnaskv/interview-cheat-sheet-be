@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResponseCategoryDto {
+public class RequestEditCategoryDto {
 
     @NotNull
     private Long id;
