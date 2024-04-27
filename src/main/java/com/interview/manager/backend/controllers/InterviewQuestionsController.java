@@ -1,5 +1,6 @@
 package com.interview.manager.backend.controllers;
 
+import com.interview.manager.backend.dto.InterviewQuestionEditRequestDto;
 import com.interview.manager.backend.dto.InterviewQuestionRequestDto;
 import com.interview.manager.backend.dto.InterviewQuestionResponseDto;
 import com.interview.manager.backend.services.interviewQuestion.InterviewQuestionService;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -59,5 +61,11 @@ public class InterviewQuestionsController {
     public ResponseEntity<Void> deleteInterviewQuestionByid(@Valid @PathVariable Long id) {
         interviewQuestionService.deleteInterviewQuestionById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping
+    public ResponseEntity<InterviewQuestionResponseDto> editInterviewQuestion(@Valid @RequestBody InterviewQuestionEditRequestDto requestDto) {
+        var updatedQuestion = interviewQuestionService.editInterviewQuestion(requestDto);
+        return ResponseEntity.ok().body(updatedQuestion);
     }
 }

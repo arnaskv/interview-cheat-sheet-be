@@ -1,5 +1,6 @@
 package com.interview.manager.backend.services.interviewQuestion;
 
+import com.interview.manager.backend.dto.InterviewQuestionEditRequestDto;
 import com.interview.manager.backend.dto.InterviewQuestionRequestDto;
 import com.interview.manager.backend.dto.InterviewQuestionResponseDto;
 import com.interview.manager.backend.exceptions.DataValidationException;
@@ -50,6 +51,15 @@ public class InterviewQuestionService {
         interviewQuestion.setCategory(category);
 
         return MAPPER.questionToResponseDto(interviewQuestionRepository.save(interviewQuestion));
+    }
+
+    public InterviewQuestionResponseDto editInterviewQuestion(InterviewQuestionEditRequestDto requestDto) {
+        Optional<InterviewQuestion> interviewQuestion = interviewQuestionRepository.findById(requestDto.getId());
+        return interviewQuestion.map(question -> {
+            question.setTitle(requestDto.getTitle());
+            interviewQuestionRepository.save(question);
+            return MAPPER.questionToResponseDto(question);
+        }).orElseThrow(() -> new NoSuchElementException("Question with ID " + requestDto.getId() + " not found"));
     }
 
     @Transactional
