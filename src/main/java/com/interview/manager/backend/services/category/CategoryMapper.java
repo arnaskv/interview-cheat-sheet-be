@@ -1,6 +1,6 @@
 package com.interview.manager.backend.services.category;
 
-import com.interview.manager.backend.dto.RequestCategoryDTO;
+import com.interview.manager.backend.dto.RequestCategoryDto;
 import com.interview.manager.backend.dto.ResponseCategoryDto;
 import com.interview.manager.backend.models.Category;
 
@@ -17,6 +17,6 @@ public interface CategoryMapper {
 
     Category responseCategoryDTOToCategory(ResponseCategoryDto responseCategoryDto);
 
-    Category requestCategoryDTOToCategory(RequestCategoryDTO requestCategoryDTO);
+    Category requestCategoryDTOToCategory(RequestCategoryDto requestCategoryDTO);
 
 }

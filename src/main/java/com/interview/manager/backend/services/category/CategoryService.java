@@ -1,6 +1,7 @@
 package com.interview.manager.backend.services.category;
 
-import com.interview.manager.backend.dto.RequestCategoryDTO;
+import com.interview.manager.backend.dto.RequestCategoryDto;
+import com.interview.manager.backend.dto.RequestEditCategoryDto;
 import com.interview.manager.backend.dto.ResponseCategoryDto;
 
 import java.util.List;
@@ -12,7 +13,9 @@ public interface CategoryService {
 
     Optional<ResponseCategoryDto> getCategoryById(Long id);
 
-    ResponseCategoryDto createCategory(RequestCategoryDTO requestCategoryDTO);
+    ResponseCategoryDto createCategory(RequestCategoryDto requestCategoryDTO);
+
+    ResponseCategoryDto editCategory(RequestEditCategoryDto requestCategoryDTO);
 
     void deleteCategoryById(Long id);
 }
