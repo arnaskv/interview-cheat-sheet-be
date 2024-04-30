@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -27,7 +26,7 @@ public class InterviewQuestionResponseDto {
     public static InterviewQuestionResponseDto of(InterviewQuestion interviewQuestion) {
         List<InterviewQuestionResponseDto> subQuestionsDto = interviewQuestion.getSubQuestions().stream()
             .map(InterviewQuestionResponseDto::of)
-            .collect(Collectors.toList());
+            .toList();
 
         return InterviewQuestionResponseDto.builder()
             .id(interviewQuestion.getId())
