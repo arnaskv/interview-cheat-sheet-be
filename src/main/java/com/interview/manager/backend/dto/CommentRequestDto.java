@@ -13,6 +13,6 @@ import lombok.NoArgsConstructor;
 @Data
 public class CommentRequestDto {
     @NotBlank
-    @Size(min=2, max=255)
+    @Size(min=1, max=255)
     private String content;
 }

@@ -24,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class CommentService {
 
     private final CommentRepository commentRepository;
-    private final CommentMapper Mapper = CommentMapper.INSTANCE;
+    private static final CommentMapper Mapper = CommentMapper.INSTANCE;
     private final InterviewQuestionRepository interviewQuestionRepository;
 
     public List<CommentResponseDto> getAll() {
@@ -41,10 +41,6 @@ public class CommentService {
     }
 
     public List<CommentResponseDto> getAllByQuestionId(Long questionId) {
-        if(!interviewQuestionRepository.existsById(questionId)) {
-            throw new DataValidationException(DataValidation.Status.NOT_FOUND, "Question not found");
-        }
-
         return commentRepository.getAllByQuestionId(questionId).stream()
             .map(Mapper::commentToResponseDto)
             .collect(Collectors.toList());

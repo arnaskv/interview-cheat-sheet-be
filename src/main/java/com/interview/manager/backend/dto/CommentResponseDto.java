@@ -19,7 +19,7 @@ public class CommentResponseDto {
     @NotBlank
     private UUID id;
     @NotBlank
-    @Size(min = 2, max = 255)
+    @Size(min = 1, max = 255)
     private String content;
     @PastOrPresent
     private OffsetDateTime dateCreated;
