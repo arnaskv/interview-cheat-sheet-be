@@ -5,23 +5,17 @@ import com.interview.manager.backend.models.Comment;
 import com.interview.manager.backend.dto.CommentResponseDto;
 
 import com.interview.manager.backend.models.InterviewQuestion;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.factory.Mappers;
 
-@Component
-public class CommentMapper {
-    public static Comment map(CommentRequestDto commentRequestDto, InterviewQuestion question) {
-        return Comment.builder()
-            .content(commentRequestDto.getContent())
-            .question(question)
-            .build();
-    }
+@Mapper(componentModel = "spring")
+public interface CommentMapper {
+    CommentMapper INSTANCE = Mappers.getMapper(CommentMapper.class);
 
-    public CommentResponseDto map(Comment comment) {
-        return CommentResponseDto.builder()
-            .id(comment.getId())
-            .content(comment.getContent())
-            .dateCreated(comment.getDateCreated())
-            .dateModified(comment.getDateModified())
-            .build();
-    }
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "dateCreated", ignore = true)
+    @Mapping(target = "dateModified", ignore = true)
+    Comment requestDtoToComment(CommentRequestDto commentRequestDto, InterviewQuestion question);
+    CommentResponseDto commentToResponseDto(Comment comment);
 }

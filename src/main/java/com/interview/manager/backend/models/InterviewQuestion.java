@@ -37,7 +37,4 @@ public class InterviewQuestion {
     @JoinColumn(name = "category_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Category category;
-
-    @OneToMany(mappedBy = "question")
-    private List<Comment> comments;
 }

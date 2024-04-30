@@ -47,7 +47,6 @@ public class Comment {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "question_id", nullable = false, updatable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private InterviewQuestion question;
 
     @PrePersist
