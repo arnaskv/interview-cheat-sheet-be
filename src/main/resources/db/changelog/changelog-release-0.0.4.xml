@@ -8,7 +8,7 @@
                         http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
 
     <changeSet id="create_interview_comments_table" author="arnas.kvedaravicius">
-        <preConditions onFail="WARN">
+        <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="interview_comments"/>
             </not>
