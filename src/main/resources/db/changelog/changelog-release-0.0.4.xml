@@ -30,6 +30,10 @@
                 <constraints nullable="false" foreignKeyName="fk_comment_question" references="interview_questions(id)"/>
             </column>
         </createTable>
+        <rollback>
+            <dropForeignKeyConstraint baseTableName="interview_comments" constraintName="fk_comment_question"/>
+            <dropTable tableName="interview_comments"/>
+        </rollback>
     </changeSet>
 
 </databaseChangeLog>
