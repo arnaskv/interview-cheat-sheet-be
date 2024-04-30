@@ -1,0 +1,25 @@
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="add_parent_id_column_to_interview_questions" author="artem.maslii">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="interview_questions" columnName="parent_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="interview_questions">
+            <column name="parent_id" type="BIGINT"/>
+        </addColumn>
+        <addForeignKeyConstraint baseTableName="interview_questions"
+                                 baseColumnNames="parent_id"
+                                 constraintName="fk_question_parent"
+                                 referencedTableName="interview_questions"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
+        <rollback>
+            <dropColumn tableName="interview_questions" columnName="parent_id"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
