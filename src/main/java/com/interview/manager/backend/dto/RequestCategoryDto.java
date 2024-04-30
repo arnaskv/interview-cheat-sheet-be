@@ -1,7 +1,6 @@
 package com.interview.manager.backend.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,12 +11,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResponseCategoryDto {
-
-    @NotNull
-    private Long id;
+public class RequestCategoryDto {
 
     @NotBlank(message = "Title should not be blank")
     @Size(max = 256, min = 1, message = "Title should be between {min} and {max} characters")
     private String title;
+
 }

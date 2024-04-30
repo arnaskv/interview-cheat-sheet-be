@@ -4,17 +4,17 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
-@Getter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResponseCategoryDto {
+@Getter
+@SuperBuilder(toBuilder = true)
+public class InterviewQuestionEditRequestDto {
 
-    @NotNull
+    @NotNull(message = "Id should not be null")
     private Long id;
 
     @NotBlank(message = "Title should not be blank")
