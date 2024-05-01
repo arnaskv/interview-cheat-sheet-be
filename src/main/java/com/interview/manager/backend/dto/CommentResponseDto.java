@@ -3,7 +3,7 @@ package com.interview.manager.backend.dto;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import jakarta.validation.constraints.PastOrPresent;
 import lombok.AllArgsConstructor;
@@ -15,11 +15,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 @Data
-public class CommentDto {
-    @NotNull
+public class CommentResponseDto {
+    @NotBlank
     private UUID id;
-    @NotNull
-    @Size(min = 2, max = 255)
+    @NotBlank
+    @Size(min = 1, max = 255)
     private String content;
     @PastOrPresent
     private OffsetDateTime dateCreated;
