@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -35,11 +34,18 @@ public class InterviewQuestionService {
     }
 
     public List<InterviewQuestionResponseDto> getAllInterviewQuestions() {
-        return interviewQuestionRepository
-            .findAll()
-            .stream()
-            .map(InterviewQuestionResponseDto::of)
-            .collect(Collectors.toList());
+        List<InterviewQuestion> parentQuestions = interviewQuestionRepository.findAllByParentQuestionIsNull();
+
+        return parentQuestions.stream()
+            .map(parentQuestion -> {
+                InterviewQuestionResponseDto parentResponseDto = MAPPER.questionToResponseDto(parentQuestion);
+                List<InterviewQuestionResponseDto> subQuestionsDtoList = parentQuestion.getSubQuestions().stream()
+                    .map(MAPPER::questionToResponseDto)
+                    .toList();
+                parentResponseDto.setSubQuestions(subQuestionsDtoList);
+                return parentResponseDto;
+            })
+            .toList();
     }
 
     public InterviewQuestionResponseDto createInterviewQuestion(InterviewQuestionRequestDto requestDto) {

@@ -7,13 +7,16 @@ import com.interview.manager.backend.models.InterviewQuestion;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
+import java.util.Objects;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Setter
 @SuperBuilder(toBuilder = true)
 public class InterviewQuestionResponseDto {
 
