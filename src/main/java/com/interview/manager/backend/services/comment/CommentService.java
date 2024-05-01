@@ -1,44 +1,60 @@
 package com.interview.manager.backend.services.comment;
 
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.interview.manager.backend.exceptions.DataValidationException;
+import com.interview.manager.backend.models.InterviewQuestion;
+import com.interview.manager.backend.repositories.InterviewQuestionRepository;
+import com.interview.manager.backend.types.DataValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import com.interview.manager.backend.dto.CommentDto;
-import com.interview.manager.backend.dto.CreateUpdateCommentDto;
+import com.interview.manager.backend.dto.CommentResponseDto;
+import com.interview.manager.backend.dto.CommentRequestDto;
 import com.interview.manager.backend.models.Comment;
 import com.interview.manager.backend.repositories.CommentRepository;
 import com.interview.manager.backend.services.comment.mapper.CommentMapper;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
 public class CommentService {
 
     private final CommentRepository commentRepository;
+    private static final CommentMapper Mapper = CommentMapper.INSTANCE;
+    private final InterviewQuestionRepository interviewQuestionRepository;
 
-
-    private final CommentMapper commentMapper;
-
-    public List<CommentDto> getAll() {
-        return commentRepository.findAll().stream()
-            .map(commentMapper::map)
+    public List<CommentResponseDto> getAll() {
+        return commentRepository
+            .findAll()
+            .stream()
+            .map(Mapper::commentToResponseDto)
             .collect(Collectors.toList());
     }
 
-    public Optional<CommentDto> getById(UUID id) {
+    public Optional<CommentResponseDto> getById(UUID id) {
         return commentRepository.findById(id)
-            .map(commentMapper::map);
+            .map(Mapper::commentToResponseDto);
     }
 
-    public CommentDto createComment(CreateUpdateCommentDto createUpdateCommentDto) {
-        Comment newComment = CommentMapper.map(createUpdateCommentDto);
-        newComment = commentRepository.save(newComment);
-        return this.getById(newComment.getId()).orElseThrow(IllegalStateException::new);
+    public List<CommentResponseDto> getAllByQuestionId(Long questionId) {
+        return commentRepository.getAllByQuestionId(questionId).stream()
+            .map(Mapper::commentToResponseDto)
+            .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public CommentResponseDto create(Long questionId, CommentRequestDto commentRequestDto) {
+        InterviewQuestion question = interviewQuestionRepository.findById(questionId)
+            .orElseThrow(() -> new DataValidationException(DataValidation.Status.NOT_FOUND, "Question not found"));
+
+        Comment comment = Mapper.requestDtoToComment(commentRequestDto, question);
+        comment = commentRepository.save(comment);
+
+        return Mapper.commentToResponseDto(comment);
     }
 
     public void deleteById(UUID id) {
@@ -46,7 +62,7 @@ public class CommentService {
             .ifPresentOrElse(
                 comment -> commentRepository.deleteById(id),
                 () -> {
-                    throw new NoSuchElementException("Comment with ID " + id + " not found");
+                    throw new DataValidationException(DataValidation.Status.NOT_FOUND, "Comment not found");
                 }
             );
     }

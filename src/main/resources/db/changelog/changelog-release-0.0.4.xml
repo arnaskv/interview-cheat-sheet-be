@@ -1,0 +1,35 @@
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="create_interview_comments_table" author="arnas.kvedaravicius">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="interview_comments"/>
+            </not>
+        </preConditions>
+        <createTable tableName="interview_comments">
+            <column name="id" type="uuid" defaultValueComputed="gen_random_uuid()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="content" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_created" type="timestamptz" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_modified" type="timestamptz" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="question_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_comment_question" references="interview_questions(id)"/>
+            </column>
+        </createTable>
+        <rollback>
+            <dropForeignKeyConstraint baseTableName="interview_comments" constraintName="fk_comment_question"/>
+            <dropTable tableName="interview_comments"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
