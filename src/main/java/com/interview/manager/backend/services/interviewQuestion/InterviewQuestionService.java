@@ -54,13 +54,29 @@ public class InterviewQuestionService {
     }
 
     public InterviewQuestionResponseDto editInterviewQuestion(InterviewQuestionEditRequestDto requestDto) {
-        Optional<InterviewQuestion> interviewQuestion = interviewQuestionRepository.findById(requestDto.getId());
-        return interviewQuestion.map(question -> {
-            question.setTitle(requestDto.getTitle());
-            interviewQuestionRepository.save(question);
-            return MAPPER.questionToResponseDto(question);
+        Optional<InterviewQuestion> optionalQuestion = interviewQuestionRepository.findById(requestDto.getId());
+
+        return optionalQuestion.map(question -> {
+            if (requestDto.getTitle() != null && !requestDto.getTitle().isEmpty()) {
+                question.setTitle(requestDto.getTitle());
+            }
+
+            if (requestDto.getCategoryId() != null) {
+                Optional<Category> optionalCategory = categoryRepository.findById(requestDto.getCategoryId());
+
+                optionalCategory.ifPresentOrElse(
+                    category -> question.setCategory(category),
+                    () -> {
+                        throw new NoSuchElementException("Category with ID " + requestDto.getCategoryId() + " not found");
+                    }
+                );
+            }
+
+            InterviewQuestion updatedQuestion = interviewQuestionRepository.save(question);
+            return MAPPER.questionToResponseDto(updatedQuestion);
         }).orElseThrow(() -> new NoSuchElementException("Question with ID " + requestDto.getId() + " not found"));
     }
+
 
     @Transactional
     public void deleteInterviewQuestionById(Long id) {
