@@ -16,7 +16,6 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -43,5 +42,6 @@ public class InterviewQuestion {
     private InterviewQuestion parentQuestion;
 
     @OneToMany(mappedBy = "parentQuestion", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<InterviewQuestion> subQuestions = new ArrayList<>();
+    private List<InterviewQuestion> subQuestions;
 }
+

@@ -1,8 +1,11 @@
 package com.interview.manager.backend.controllers;
 
+import com.interview.manager.backend.dto.CommentRequestDto;
+import com.interview.manager.backend.dto.CommentResponseDto;
 import com.interview.manager.backend.dto.InterviewQuestionEditRequestDto;
 import com.interview.manager.backend.dto.InterviewQuestionRequestDto;
 import com.interview.manager.backend.dto.InterviewQuestionResponseDto;
+import com.interview.manager.backend.services.comment.CommentService;
 import com.interview.manager.backend.services.interviewQuestion.InterviewQuestionService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -29,6 +32,7 @@ import java.util.Optional;
 public class InterviewQuestionsController {
 
     private final InterviewQuestionService interviewQuestionService;
+    private final CommentService commentService;
 
     @GetMapping("/{id}")
     public ResponseEntity<InterviewQuestionResponseDto> getInterviewQuestions(@PathVariable Long id) {
@@ -42,6 +46,23 @@ public class InterviewQuestionsController {
     public ResponseEntity<List<InterviewQuestionResponseDto>> getAllInterviewQuestions() {
         List<InterviewQuestionResponseDto> interviewQuestionResponseDto = interviewQuestionService.getAllInterviewQuestions();
         return ResponseEntity.ok(interviewQuestionResponseDto);
+    }
+
+    @GetMapping("/{id}/comments")
+    public ResponseEntity<List<CommentResponseDto>> getAllCommentsByQuestionId(@PathVariable Long id) {
+        List<CommentResponseDto> comments = commentService.getAllByQuestionId(id);
+        return ResponseEntity.ok(comments);
+    }
+
+    @PostMapping("/{id}/comments")
+    public ResponseEntity<CommentResponseDto> createComment(@PathVariable Long id, @Valid @RequestBody CommentRequestDto comment) {
+        CommentResponseDto createdComment = commentService.create(id, comment);
+        URI location = ServletUriComponentsBuilder
+            .fromCurrentRequest()
+            .path("/{id}")
+            .buildAndExpand(createdComment.getId())
+            .toUri();
+        return ResponseEntity.created(location).body(createdComment);
     }
 
     @PostMapping

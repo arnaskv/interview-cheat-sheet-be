@@ -4,8 +4,11 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Column;
 import jakarta.persistence.GenerationType;
@@ -30,7 +33,7 @@ public class Comment {
     @Column(nullable = false, updatable = false)
     private UUID id;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false)
     private String content;
 
     @Column(name = "date_created", nullable = false, updatable = false)
@@ -39,6 +42,10 @@ public class Comment {
     @Column(name = "date_modified", nullable = false)
     @LastModifiedDate
     private OffsetDateTime dateModified;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "question_id", nullable = false, updatable = false)
+    private InterviewQuestion question;
 
     @PrePersist
     public void onPrePersist() {
