@@ -20,6 +20,8 @@
                                  onDelete="CASCADE"/>
         <rollback>
             <dropColumn tableName="interview_questions" columnName="parent_id"/>
+            <dropForeignKeyConstraint baseTableName="interview_questions"
+                                      constraintName="fk_question_parent"/>
         </rollback>
     </changeSet>
 </databaseChangeLog>
