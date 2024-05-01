@@ -49,12 +49,14 @@ public class InterviewQuestionService {
     }
 
     public InterviewQuestionResponseDto createInterviewQuestion(InterviewQuestionRequestDto requestDto) {
-
         Category category = categoryRepository.findById(requestDto.getCategoryId())
             .orElseThrow(() -> new DataValidationException(DataValidation.Status.NOT_FOUND, "Category not found"));
 
-        InterviewQuestion parentQuestion = interviewQuestionRepository.findById(requestDto.getParentId())
-            .orElse(null);
+        InterviewQuestion parentQuestion = null;
+        if (requestDto.getParentId() != null) {
+            parentQuestion = interviewQuestionRepository.findById(requestDto.getParentId())
+                .orElse(null);
+        }
 
         InterviewQuestion interviewQuestion = MAPPER.requestDtoToInterviewQuestion(requestDto);
         interviewQuestion.setCategory(category);
