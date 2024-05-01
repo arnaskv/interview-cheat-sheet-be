@@ -16,4 +16,5 @@ public class InterviewQuestionRequestDto {
     @Size(max = 256, min = 1, message = "Title should be between {min} and {max} characters")
     private String title;
     private Long categoryId;
+    private Long parentId;
 }
