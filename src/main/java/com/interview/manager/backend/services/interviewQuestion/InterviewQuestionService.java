@@ -56,24 +56,27 @@ public class InterviewQuestionService {
             .orElseThrow(() -> new DataValidationException(DataValidation.Status.NOT_FOUND, "Category not found"));
 
         InterviewQuestion parentQuestion = MAPPER.requestDtoToInterviewQuestion(requestDto);
-        parentQuestion.setCategory(category);
 
-        InterviewQuestion finalParentQuestion = parentQuestion;
+        List<InterviewQuestion> savedSubQuestions = createSubQuestions(requestDto, category, parentQuestion);
+
+        parentQuestion.setSubQuestions(savedSubQuestions);
+        parentQuestion.setCategory(category);
+        parentQuestion = interviewQuestionRepository.save(parentQuestion);
+
+        return MAPPER.questionToResponseDto(parentQuestion);
+    }
+
+    private List<InterviewQuestion> createSubQuestions(InterviewQuestionRequestDto requestDto, Category category, InterviewQuestion parentQuestion) {
         List<InterviewQuestion> subQuestions = requestDto.getSubQuestions().stream()
             .map(subQuestionDto -> {
                 InterviewQuestion subQuestion = MAPPER.requestSubQuestionDtoToInterviewQuestion(subQuestionDto);
                 subQuestion.setCategory(category);
-                subQuestion.setParentQuestion(finalParentQuestion);
+                subQuestion.setParentQuestion(parentQuestion);
                 return subQuestion;
             })
             .toList();
 
-        List<InterviewQuestion> savedSubQuestions = interviewQuestionRepository.saveAll(subQuestions);
-
-        parentQuestion.setSubQuestions(savedSubQuestions);
-        parentQuestion = interviewQuestionRepository.save(parentQuestion);
-
-        return MAPPER.questionToResponseDto(parentQuestion);
+        return interviewQuestionRepository.saveAll(subQuestions);
     }
 
 
