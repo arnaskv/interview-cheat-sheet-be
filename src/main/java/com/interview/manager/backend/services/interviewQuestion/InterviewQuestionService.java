@@ -15,11 +15,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Service
 public class InterviewQuestionService {
     private final InterviewQuestionRepository interviewQuestionRepository;
@@ -48,17 +50,37 @@ public class InterviewQuestionService {
             .toList();
     }
 
+    @Transactional
     public InterviewQuestionResponseDto createInterviewQuestion(InterviewQuestionRequestDto requestDto) {
-
         Category category = categoryRepository.findById(requestDto.getCategoryId())
             .orElseThrow(() -> new DataValidationException(DataValidation.Status.NOT_FOUND, "Category not found"));
 
-        InterviewQuestion interviewQuestion = MAPPER.requestDtoToInterviewQuestion(requestDto);
-        interviewQuestion.setCategory(category);
+        InterviewQuestion parentQuestion = MAPPER.requestDtoToInterviewQuestion(requestDto);
 
-        return MAPPER.questionToResponseDto(interviewQuestionRepository.save(interviewQuestion));
+        List<InterviewQuestion> savedSubQuestions = createSubQuestions(requestDto, category, parentQuestion);
+
+        parentQuestion.setSubQuestions(savedSubQuestions);
+        parentQuestion.setCategory(category);
+        parentQuestion = interviewQuestionRepository.save(parentQuestion);
+
+        return MAPPER.questionToResponseDto(parentQuestion);
     }
 
+    private List<InterviewQuestion> createSubQuestions(InterviewQuestionRequestDto requestDto, Category category, InterviewQuestion parentQuestion) {
+        List<InterviewQuestion> subQuestions = requestDto.getSubQuestions().stream()
+            .map(subQuestionDto -> {
+                InterviewQuestion subQuestion = MAPPER.requestSubQuestionDtoToInterviewQuestion(subQuestionDto);
+                subQuestion.setCategory(category);
+                subQuestion.setParentQuestion(parentQuestion);
+                return subQuestion;
+            })
+            .toList();
+
+        return interviewQuestionRepository.saveAll(subQuestions);
+    }
+
+
+    @Transactional
     public InterviewQuestionResponseDto editInterviewQuestion(InterviewQuestionEditRequestDto requestDto) {
         Optional<InterviewQuestion> interviewQuestion = interviewQuestionRepository.findById(requestDto.getId());
         return interviewQuestion.map(question -> {
