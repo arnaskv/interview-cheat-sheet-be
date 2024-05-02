@@ -33,7 +33,7 @@ public class Comment {
     @Column(nullable = false, updatable = false)
     private UUID id;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false)
     private String content;
 
     @Column(name = "date_created", nullable = false, updatable = false)
