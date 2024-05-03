@@ -5,6 +5,7 @@ import com.interview.manager.backend.dto.CommentResponseDto;
 import com.interview.manager.backend.dto.InterviewQuestionEditRequestDto;
 import com.interview.manager.backend.dto.InterviewQuestionRequestDto;
 import com.interview.manager.backend.dto.InterviewQuestionResponseDto;
+import com.interview.manager.backend.dto.InterviewSubQuestionDto;
 import com.interview.manager.backend.services.comment.CommentService;
 import com.interview.manager.backend.services.interviewQuestion.InterviewQuestionService;
 import jakarta.validation.Valid;
@@ -68,6 +69,19 @@ public class InterviewQuestionsController {
     @PostMapping
     public ResponseEntity<InterviewQuestionResponseDto> createInterviewQuestion(@Valid @RequestBody InterviewQuestionRequestDto requestDto) {
         InterviewQuestionResponseDto questionResponse = interviewQuestionService.createInterviewQuestion(requestDto);
+
+        URI location = ServletUriComponentsBuilder
+            .fromCurrentRequest()
+            .path("/{id}")
+            .buildAndExpand(questionResponse.getId())
+            .toUri();
+
+        return ResponseEntity.created(location).body(questionResponse);
+    }
+
+    @PostMapping("/{parentId}")
+    public ResponseEntity<InterviewQuestionResponseDto> createInterviewSubQuestion(@Valid @RequestBody InterviewSubQuestionDto requestDto, @PathVariable Long parentId) {
+        InterviewQuestionResponseDto questionResponse = interviewQuestionService.createInterviewQuestion(requestDto, parentId);
 
         URI location = ServletUriComponentsBuilder
             .fromCurrentRequest()

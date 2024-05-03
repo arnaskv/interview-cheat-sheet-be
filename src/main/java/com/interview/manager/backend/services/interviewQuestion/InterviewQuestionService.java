@@ -3,6 +3,7 @@ package com.interview.manager.backend.services.interviewQuestion;
 import com.interview.manager.backend.dto.InterviewQuestionEditRequestDto;
 import com.interview.manager.backend.dto.InterviewQuestionRequestDto;
 import com.interview.manager.backend.dto.InterviewQuestionResponseDto;
+import com.interview.manager.backend.dto.InterviewSubQuestionDto;
 import com.interview.manager.backend.exceptions.DataValidationException;
 import com.interview.manager.backend.models.Category;
 import com.interview.manager.backend.models.InterviewQuestion;
@@ -77,6 +78,20 @@ public class InterviewQuestionService {
             .toList();
 
         return interviewQuestionRepository.saveAll(subQuestions);
+    }
+
+    @Transactional
+    public InterviewQuestionResponseDto createInterviewQuestion(InterviewSubQuestionDto requestDto, Long parentId) {
+        InterviewQuestion parentQuestion = interviewQuestionRepository.findById(parentId)
+            .orElseThrow(() -> new DataValidationException(DataValidation.Status.NOT_FOUND, "Category not found"));
+
+        InterviewQuestion subQuestion = MAPPER.requestSubQuestionDtoToInterviewQuestion(requestDto);
+        subQuestion.setCategory(parentQuestion.getCategory());
+        subQuestion.setParentQuestion(parentQuestion);
+
+        InterviewQuestion savedSubQuestion = interviewQuestionRepository.save(subQuestion);
+
+        return MAPPER.questionToResponseDto(savedSubQuestion);
     }
 
 
