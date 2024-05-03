@@ -1,10 +1,12 @@
 package com.interview.manager.backend.services.comment;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.interview.manager.backend.dto.CommentEditRequestDto;
 import com.interview.manager.backend.exceptions.DataValidationException;
 import com.interview.manager.backend.models.InterviewQuestion;
 import com.interview.manager.backend.repositories.InterviewQuestionRepository;
@@ -65,5 +67,17 @@ public class CommentService {
                     throw new DataValidationException(DataValidation.Status.NOT_FOUND, "Comment not found");
                 }
             );
+    }
+
+    public CommentResponseDto editComment(CommentEditRequestDto requestDto){
+        Comment comment = commentRepository.findById(requestDto.getId())
+            .orElseThrow(() -> new NoSuchElementException("Comment with ID " + requestDto.getId() + " not found"));
+
+        if(requestDto.getContent() != null && !requestDto.getContent().isEmpty()) {
+            comment.setContent(requestDto.getContent());
+        }
+
+        commentRepository.save(comment);
+        return Mapper.commentToResponseDto(comment);
     }
 }
