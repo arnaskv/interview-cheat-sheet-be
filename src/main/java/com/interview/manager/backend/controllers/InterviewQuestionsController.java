@@ -80,20 +80,13 @@ public class InterviewQuestionsController {
     }
 
     @PostMapping("/{parentId}")
-    public ResponseEntity<InterviewQuestionResponseDto> createInterviewSubQuestion(@Valid @RequestBody InterviewSubQuestionDto requestDto, @PathVariable Long parentId) {
-        InterviewQuestionResponseDto questionResponse = interviewQuestionService.createInterviewQuestion(requestDto, parentId);
-
-        URI location = ServletUriComponentsBuilder
-            .fromCurrentRequest()
-            .path("/{id}")
-            .buildAndExpand(questionResponse.getId())
-            .toUri();
-
-        return ResponseEntity.created(location).body(questionResponse);
+    public ResponseEntity<List<InterviewQuestionResponseDto>> createInterviewSubQuestion(@Valid @RequestBody List<InterviewSubQuestionDto> requestDto, @PathVariable Long parentId) {
+        List<InterviewQuestionResponseDto> questionResponse = interviewQuestionService.createInterviewQuestion(requestDto, parentId);
+        return ResponseEntity.ok(questionResponse);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteInterviewQuestionByid(@Valid @PathVariable Long id) {
+    public ResponseEntity<Void> deleteInterviewQuestionById(@Valid @PathVariable Long id) {
         interviewQuestionService.deleteInterviewQuestionById(id);
         return ResponseEntity.noContent().build();
     }

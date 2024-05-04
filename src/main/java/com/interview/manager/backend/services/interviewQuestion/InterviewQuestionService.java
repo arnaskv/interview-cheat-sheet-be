@@ -81,19 +81,21 @@ public class InterviewQuestionService {
     }
 
     @Transactional
-    public InterviewQuestionResponseDto createInterviewQuestion(InterviewSubQuestionDto requestDto, Long parentId) {
+    public List<InterviewQuestionResponseDto> createInterviewQuestion(List<InterviewSubQuestionDto> requestDto, Long parentId) {
         InterviewQuestion parentQuestion = interviewQuestionRepository.findById(parentId)
             .orElseThrow(() -> new DataValidationException(DataValidation.Status.NOT_FOUND, "Category not found"));
 
-        InterviewQuestion subQuestion = MAPPER.requestSubQuestionDtoToInterviewQuestion(requestDto);
-        subQuestion.setCategory(parentQuestion.getCategory());
-        subQuestion.setParentQuestion(parentQuestion);
+        List<InterviewQuestion> subQuestions = requestDto.stream()
+            .map(MAPPER::requestSubQuestionDtoToInterviewQuestion)
+            .peek(subQuestion -> {
+                subQuestion.setCategory(parentQuestion.getCategory());
+                subQuestion.setParentQuestion(parentQuestion);
+            }).toList();
 
-        InterviewQuestion savedSubQuestion = interviewQuestionRepository.save(subQuestion);
-
-        return MAPPER.questionToResponseDto(savedSubQuestion);
+        return interviewQuestionRepository.saveAll(subQuestions).stream()
+            .map(MAPPER::questionToResponseDto)
+            .toList();
     }
-
 
     @Transactional
     public InterviewQuestionResponseDto editInterviewQuestion(InterviewQuestionEditRequestDto requestDto) {
