@@ -1,8 +1,8 @@
 package com.interview.manager.backend.services.interviewQuestion;
 
-import com.interview.manager.backend.dto.InterviewQuestionEditRequestDto;
 import com.interview.manager.backend.dto.InterviewQuestionRequestDto;
 import com.interview.manager.backend.dto.InterviewQuestionResponseDto;
+import com.interview.manager.backend.dto.InterviewSubQuestionDto;
 import com.interview.manager.backend.exceptions.DataValidationException;
 import com.interview.manager.backend.models.Category;
 import com.interview.manager.backend.models.InterviewQuestion;
@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -79,25 +78,46 @@ public class InterviewQuestionService {
         return interviewQuestionRepository.saveAll(subQuestions);
     }
 
-
     @Transactional
-    public InterviewQuestionResponseDto editInterviewQuestion(InterviewQuestionEditRequestDto requestDto) {
-        InterviewQuestion question = interviewQuestionRepository.findById(requestDto.getId())
-            .orElseThrow(() -> new NoSuchElementException("Question with ID " + requestDto.getId() + " not found"));
+    public InterviewQuestionResponseDto editInterviewQuestion(InterviewQuestionRequestDto requestDto, Long id) {
+        InterviewQuestion question = interviewQuestionRepository.findById(id)
+            .orElseThrow(() -> new NoSuchElementException("Question with ID " + id + " not found"));
 
-        if (requestDto.getTitle() != null && !requestDto.getTitle().isEmpty()) {
+        if (!requestDto.getTitle().equals(question.getTitle())) {
             question.setTitle(requestDto.getTitle());
         }
 
-        if (requestDto.getCategoryId() != null) {
+        if (!requestDto.getCategoryId().equals(question.getCategory().getId())) {
             Category category = categoryRepository.findById(requestDto.getCategoryId())
                 .orElseThrow(() -> new NoSuchElementException("Category with ID " + requestDto.getCategoryId() + " not found"));
-
             question.setCategory(category);
         }
 
-        InterviewQuestion updatedQuestion = interviewQuestionRepository.save(question);
-        return MAPPER.questionToResponseDto(updatedQuestion);
+        if (requestDto.getSubQuestions() != null && !requestDto.getSubQuestions().isEmpty()) {
+            List<InterviewQuestion> newSubQuestions = addNewSubQuestions(requestDto, question);
+            if (!newSubQuestions.isEmpty()) {
+                question.getSubQuestions().addAll(newSubQuestions);
+            }
+        }
+        question = interviewQuestionRepository.save(question);
+
+        return MAPPER.questionToResponseDto(question);
+    }
+
+    private List<InterviewQuestion> addNewSubQuestions(InterviewQuestionRequestDto requestDto, InterviewQuestion question) {
+        List<InterviewQuestion> existingSubQuestions = question.getSubQuestions();
+        List<InterviewSubQuestionDto> subQuestionsToAdd = requestDto.getSubQuestions().stream()
+            .filter(subQuestion -> existingSubQuestions.stream()
+                .noneMatch(existingSubQuestion -> existingSubQuestion.getTitle().equals(subQuestion.getTitle())))
+            .toList();
+
+        return subQuestionsToAdd.stream()
+            .map(MAPPER::requestSubQuestionDtoToInterviewQuestion)
+            .peek(subQuestion -> {
+                subQuestion.setCategory(question.getCategory());
+                subQuestion.setParentQuestion(question);
+            })
+            .toList();
     }
 
 

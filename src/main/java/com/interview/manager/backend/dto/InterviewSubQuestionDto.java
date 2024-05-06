@@ -19,7 +19,4 @@ public class InterviewSubQuestionDto {
     @NotBlank(message = "Title should not be blank")
     @Size(max = 256, min = 1, message = "Title should be between {min} and {max} characters")
     private String title;
-
-    @Nullable
-    private List<InterviewSubQuestionDto> subQuestions;
 }
