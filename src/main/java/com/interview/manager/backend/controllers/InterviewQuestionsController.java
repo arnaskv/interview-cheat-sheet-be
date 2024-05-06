@@ -2,10 +2,8 @@ package com.interview.manager.backend.controllers;
 
 import com.interview.manager.backend.dto.CommentRequestDto;
 import com.interview.manager.backend.dto.CommentResponseDto;
-import com.interview.manager.backend.dto.InterviewQuestionEditRequestDto;
 import com.interview.manager.backend.dto.InterviewQuestionRequestDto;
 import com.interview.manager.backend.dto.InterviewQuestionResponseDto;
-import com.interview.manager.backend.dto.InterviewSubQuestionDto;
 import com.interview.manager.backend.services.comment.CommentService;
 import com.interview.manager.backend.services.interviewQuestion.InterviewQuestionService;
 import jakarta.validation.Valid;
@@ -79,21 +77,15 @@ public class InterviewQuestionsController {
         return ResponseEntity.created(location).body(questionResponse);
     }
 
-    @PostMapping("/{parentId}")
-    public ResponseEntity<List<InterviewQuestionResponseDto>> createInterviewSubQuestion(@Valid @RequestBody List<InterviewSubQuestionDto> requestDto, @PathVariable Long parentId) {
-        List<InterviewQuestionResponseDto> questionResponse = interviewQuestionService.createInterviewQuestion(requestDto, parentId);
-        return ResponseEntity.ok(questionResponse);
-    }
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteInterviewQuestionById(@Valid @PathVariable Long id) {
         interviewQuestionService.deleteInterviewQuestionById(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping
-    public ResponseEntity<InterviewQuestionResponseDto> editInterviewQuestion(@Valid @RequestBody InterviewQuestionEditRequestDto requestDto) {
-        var updatedQuestion = interviewQuestionService.editInterviewQuestion(requestDto);
+    @PatchMapping("/{id}")
+    public ResponseEntity<InterviewQuestionResponseDto> editInterviewQuestion(@Valid @RequestBody InterviewQuestionRequestDto requestDto, @PathVariable Long id) {
+        var updatedQuestion = interviewQuestionService.editInterviewQuestion(requestDto, id);
         return ResponseEntity.ok().body(updatedQuestion);
     }
 }

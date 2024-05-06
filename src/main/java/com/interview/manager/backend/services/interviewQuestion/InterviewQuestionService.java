@@ -1,6 +1,5 @@
 package com.interview.manager.backend.services.interviewQuestion;
 
-import com.interview.manager.backend.dto.InterviewQuestionEditRequestDto;
 import com.interview.manager.backend.dto.InterviewQuestionRequestDto;
 import com.interview.manager.backend.dto.InterviewQuestionResponseDto;
 import com.interview.manager.backend.dto.InterviewSubQuestionDto;
@@ -16,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -81,40 +79,60 @@ public class InterviewQuestionService {
     }
 
     @Transactional
-    public List<InterviewQuestionResponseDto> createInterviewQuestion(List<InterviewSubQuestionDto> requestDto, Long parentId) {
-        InterviewQuestion parentQuestion = interviewQuestionRepository.findById(parentId)
-            .orElseThrow(() -> new DataValidationException(DataValidation.Status.NOT_FOUND, "Category not found"));
+    public InterviewQuestionResponseDto editInterviewQuestion(InterviewQuestionRequestDto requestDto, Long id) {
+        InterviewQuestion question = interviewQuestionRepository.findById(id)
+            .orElseThrow(() -> new NoSuchElementException("Question with ID " + id + " not found"));
 
-        List<InterviewQuestion> subQuestions = requestDto.stream()
-            .map(MAPPER::requestSubQuestionDtoToInterviewQuestion)
-            .peek(subQuestion -> {
-                subQuestion.setCategory(parentQuestion.getCategory());
-                subQuestion.setParentQuestion(parentQuestion);
-            }).toList();
+        boolean parentQuestionModified = updateParentQuestion(requestDto, question);
 
-        return interviewQuestionRepository.saveAll(subQuestions).stream()
-            .map(MAPPER::questionToResponseDto)
-            .toList();
-    }
-
-    @Transactional
-    public InterviewQuestionResponseDto editInterviewQuestion(InterviewQuestionEditRequestDto requestDto) {
-        InterviewQuestion question = interviewQuestionRepository.findById(requestDto.getId())
-            .orElseThrow(() -> new NoSuchElementException("Question with ID " + requestDto.getId() + " not found"));
-
-        if (requestDto.getTitle() != null && !requestDto.getTitle().isEmpty()) {
-            question.setTitle(requestDto.getTitle());
+        if (requestDto.getSubQuestions() != null && !requestDto.getSubQuestions().isEmpty()) {
+            List<InterviewQuestion> newSubQuestions = addNewSubQuestions(requestDto, question);
+            if (!newSubQuestions.isEmpty()) {
+                question.getSubQuestions().addAll(newSubQuestions);
+                parentQuestionModified = true;
+            }
         }
 
-        if (requestDto.getCategoryId() != null) {
+        if (parentQuestionModified) {
+            question = interviewQuestionRepository.save(question);
+        }
+
+        return MAPPER.questionToResponseDto(question);
+    }
+
+    private boolean updateParentQuestion(InterviewQuestionRequestDto requestDto, InterviewQuestion question) {
+        boolean modified = false;
+
+        if (requestDto.getTitle() != null && !requestDto.getTitle().isEmpty() && !requestDto.getTitle().equals(question.getTitle())) {
+            question.setTitle(requestDto.getTitle());
+            modified = true;
+        }
+
+        if (requestDto.getCategoryId() != null && !requestDto.getCategoryId().equals(question.getCategory().getId())) {
             Category category = categoryRepository.findById(requestDto.getCategoryId())
                 .orElseThrow(() -> new NoSuchElementException("Category with ID " + requestDto.getCategoryId() + " not found"));
 
             question.setCategory(category);
+            modified = true;
         }
 
-        InterviewQuestion updatedQuestion = interviewQuestionRepository.save(question);
-        return MAPPER.questionToResponseDto(updatedQuestion);
+        return modified;
+    }
+
+    private List<InterviewQuestion> addNewSubQuestions(InterviewQuestionRequestDto requestDto, InterviewQuestion question) {
+        List<InterviewQuestion> existingSubQuestions = question.getSubQuestions();
+        List<InterviewSubQuestionDto> subQuestionsToAdd = requestDto.getSubQuestions().stream()
+            .filter(subQuestion -> existingSubQuestions.stream()
+                .noneMatch(existingSubQuestion -> existingSubQuestion.getTitle().equals(subQuestion.getTitle())))
+            .toList();
+
+        return subQuestionsToAdd.stream()
+            .map(MAPPER::requestSubQuestionDtoToInterviewQuestion)
+            .peek(subQuestion -> {
+                subQuestion.setCategory(question.getCategory());
+                subQuestion.setParentQuestion(question);
+            })
+            .toList();
     }
 
 
