@@ -103,12 +103,12 @@ public class InterviewQuestionService {
     private boolean updateParentQuestion(InterviewQuestionRequestDto requestDto, InterviewQuestion question) {
         boolean modified = false;
 
-        if (requestDto.getTitle() != null && !requestDto.getTitle().isEmpty() && !requestDto.getTitle().equals(question.getTitle())) {
+        if (!requestDto.getTitle().equals(question.getTitle())) {
             question.setTitle(requestDto.getTitle());
             modified = true;
         }
 
-        if (requestDto.getCategoryId() != null && !requestDto.getCategoryId().equals(question.getCategory().getId())) {
+        if (!requestDto.getCategoryId().equals(question.getCategory().getId())) {
             Category category = categoryRepository.findById(requestDto.getCategoryId())
                 .orElseThrow(() -> new NoSuchElementException("Category with ID " + requestDto.getCategoryId() + " not found"));
 
