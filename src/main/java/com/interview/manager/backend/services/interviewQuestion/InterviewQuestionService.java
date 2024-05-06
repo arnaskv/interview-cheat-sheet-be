@@ -83,40 +83,25 @@ public class InterviewQuestionService {
         InterviewQuestion question = interviewQuestionRepository.findById(id)
             .orElseThrow(() -> new NoSuchElementException("Question with ID " + id + " not found"));
 
-        boolean parentQuestionModified = updateParentQuestion(requestDto, question);
-
-        if (requestDto.getSubQuestions() != null && !requestDto.getSubQuestions().isEmpty()) {
-            List<InterviewQuestion> newSubQuestions = addNewSubQuestions(requestDto, question);
-            if (!newSubQuestions.isEmpty()) {
-                question.getSubQuestions().addAll(newSubQuestions);
-                parentQuestionModified = true;
-            }
-        }
-
-        if (parentQuestionModified) {
-            question = interviewQuestionRepository.save(question);
-        }
-
-        return MAPPER.questionToResponseDto(question);
-    }
-
-    private boolean updateParentQuestion(InterviewQuestionRequestDto requestDto, InterviewQuestion question) {
-        boolean modified = false;
-
         if (!requestDto.getTitle().equals(question.getTitle())) {
             question.setTitle(requestDto.getTitle());
-            modified = true;
         }
 
         if (!requestDto.getCategoryId().equals(question.getCategory().getId())) {
             Category category = categoryRepository.findById(requestDto.getCategoryId())
                 .orElseThrow(() -> new NoSuchElementException("Category with ID " + requestDto.getCategoryId() + " not found"));
-
             question.setCategory(category);
-            modified = true;
         }
 
-        return modified;
+        if (requestDto.getSubQuestions() != null && !requestDto.getSubQuestions().isEmpty()) {
+            List<InterviewQuestion> newSubQuestions = addNewSubQuestions(requestDto, question);
+            if (!newSubQuestions.isEmpty()) {
+                question.getSubQuestions().addAll(newSubQuestions);
+            }
+        }
+        question = interviewQuestionRepository.save(question);
+
+        return MAPPER.questionToResponseDto(question);
     }
 
     private List<InterviewQuestion> addNewSubQuestions(InterviewQuestionRequestDto requestDto, InterviewQuestion question) {
