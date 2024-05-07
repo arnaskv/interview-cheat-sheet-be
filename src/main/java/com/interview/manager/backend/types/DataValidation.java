@@ -25,7 +25,8 @@ public final class DataValidation {
         MALFORMED_DATA(400, CategoryType.INVALID, "Data is malformed"),
         TITLE_TOO_LARGE(400, CategoryType.INVALID, "Title is too long"),
         ILLEGAL_ACCEPT(422, CategoryType.INVALID, "Illegal accept value"),
-        NOT_FOUND(404, CategoryType.NOT_FOUND, "Data not found");
+        NOT_FOUND(404, CategoryType.NOT_FOUND, "Data not found"),
+        CATEGORY_NOT_FOUND(404, CategoryType.NOT_FOUND, "Category not found");
 
         @Getter
         private final int code;

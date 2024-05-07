@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -51,7 +50,8 @@ public class CategoryServiceImpl implements CategoryService {
             logger.error("Title is missing.");
             throw new DataValidationException(DataValidation.Status.MISSING_DATA);
         } else if (requestCategoryDTO.getTitle().length() > 256) {
-            logger.error("Title '{}' is too long. Maximum allowed length is 256 characters.", requestCategoryDTO.getTitle());
+            logger.error("Title '{}' is too long. Maximum allowed length is 256 characters.",
+                    requestCategoryDTO.getTitle());
             throw new DataValidationException(DataValidation.Status.TITLE_TOO_LARGE);
         }
         Category category = CATEGORY_MAPPER.requestCategoryDTOToCategory(requestCategoryDTO);
@@ -61,26 +61,26 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public ResponseCategoryDto editCategory(RequestEditCategoryDto requestCategoryDTO) {
-        Optional<Category> optionalCategory = categoryRepository.findById(requestCategoryDTO.getId());
-        return optionalCategory.map(category -> {
-            if (!category.getTitle().equals(requestCategoryDTO.getTitle())) {
-                category.setTitle(requestCategoryDTO.getTitle());
-                categoryRepository.save(category);
-            }
-            return CATEGORY_MAPPER.categoryToResponseCategoryDTO(category);
-        }).orElseThrow(() -> new NoSuchElementException("Category with ID " + requestCategoryDTO.getId() + " not found"));
+        Category category = categoryRepository.findById(requestCategoryDTO.getId())
+                .orElseThrow(() -> new DataValidationException(DataValidation.Status.CATEGORY_NOT_FOUND));
+        logger.info("Editing category with ID: {}", category.getId());
+        if (!category.getTitle().equals(requestCategoryDTO.getTitle())) {
+            category.setTitle(requestCategoryDTO.getTitle());
+            category = categoryRepository.save(category);
+            logger.info("Category updated: {}", category.getId());
+        }
+        return CATEGORY_MAPPER.categoryToResponseCategoryDTO(category);
     }
-
 
     @Override
     @Transactional
     public void deleteCategoryById(Long id) {
-        categoryRepository.findById(id)
-            .ifPresentOrElse(
-                category -> categoryRepository.deleteById(id),
-                () -> {
-                    throw new NoSuchElementException("Category with ID " + id + " not found");
-                }
-            );
+        if (!categoryRepository.existsById(id)) {
+            logger.error("Attempt to delete non-existent category with ID: {}", id);
+            throw new DataValidationException(DataValidation.Status.CATEGORY_NOT_FOUND);
+        }
+        categoryRepository.deleteById(id);
+        logger.info("Category deleted with ID: {}", id);
     }
+
 }

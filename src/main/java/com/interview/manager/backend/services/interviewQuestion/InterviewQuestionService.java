@@ -10,8 +10,6 @@ import com.interview.manager.backend.repositories.CategoryRepository;
 import com.interview.manager.backend.repositories.InterviewQuestionRepository;
 import com.interview.manager.backend.types.DataValidation;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +25,6 @@ public class InterviewQuestionService {
     private final CategoryRepository categoryRepository;
     private static final InterviewQuestionMapper MAPPER = InterviewQuestionMapper.INSTANCE;
 
-    private static final Logger logger = LoggerFactory.getLogger(InterviewQuestion.class);
 
     public Optional<InterviewQuestionResponseDto> findById(Long interviewId) {
         Optional<InterviewQuestion> optionalInterviewQuestion = interviewQuestionRepository.findById(interviewId);

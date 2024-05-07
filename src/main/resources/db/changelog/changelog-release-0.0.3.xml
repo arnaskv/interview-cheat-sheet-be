@@ -7,18 +7,18 @@
         <preConditions onFail="MARK_RAN">
             <not>
                 <foreignKeyConstraintExists
-                    foreignKeyName="fk_question_category" foreignKeyTableName="interview_questions"/>
+                    foreignKeyName="fk_question_category" foreignKeyTableName="interview_questions" />
             </not>
         </preConditions>
         <addForeignKeyConstraint baseTableName="interview_questions"
-                                 baseColumnNames="category_id"
-                                 constraintName="fk_question_category"
-                                 referencedTableName="interview_categories"
-                                 referencedColumnNames="id"
-                                 onDelete="CASCADE"/>
+            baseColumnNames="category_id"
+            constraintName="fk_question_category"
+            referencedTableName="interview_categories"
+            referencedColumnNames="id"
+            onDelete="CASCADE" />
         <rollback>
             <dropForeignKeyConstraint baseTableName="interview_questions"
-                                      constraintName="fk_question_category"/>
+                constraintName="fk_question_category" />
         </rollback>
     </changeSet>
 

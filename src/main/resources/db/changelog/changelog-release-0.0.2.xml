@@ -17,11 +17,12 @@
     <changeSet id="add_question_category" author="tomas.miliunas">
         <addColumn tableName="interview_questions">
             <column name="category_id" type="bigint">
-                <constraints nullable="false" foreignKeyName="fk_question_category" references="interview_categories(id)"/>
+                <constraints nullable="false" foreignKeyName="fk_question_category"
+                    references="interview_categories(id)" />
             </column>
         </addColumn>
         <rollback>
-            <dropColumn tableName="interview_questions" columnName="category_id"/>
+            <dropColumn tableName="interview_questions" columnName="category_id" />
         </rollback>
     </changeSet>
 

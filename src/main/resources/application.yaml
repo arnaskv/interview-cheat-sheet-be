@@ -16,5 +16,11 @@ spring:
                 dialect: org.hibernate.dialect.PostgreSQLDialect
     liquibase:
         change-log: classpath:db/changelog-master.xml
-        contexts: test
-        test-rollback-on-update: true
+logging:
+    level:
+        org:
+            springframework:
+                jdbc: WARN
+                data: WARN
+                orm: WARN
+                hibernate: WARN

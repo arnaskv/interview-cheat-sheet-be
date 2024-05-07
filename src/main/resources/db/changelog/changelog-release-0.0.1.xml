@@ -8,7 +8,6 @@
                         http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
 
 
-
     <changeSet id="create_interview_categories_table" author="dzmitry.papkou">
         <createTable tableName="interview_categories">
             <column name="id" type="bigserial">
@@ -23,19 +22,25 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="delete_interview_category_table" author="dzmitry.papkou">
-        <comment>Remove and create new table, while not too much data for now</comment>
-        <dropTable tableName="interview_category" />
+    <changeSet id="create_interview_questions_table" author="dzmitry.papkou">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="interview_questions" />
+            </not>
+        </preConditions>
+        <comment>Create interview_questions table if it does not exist already</comment>
+        <createTable tableName="interview_questions">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="title" type="VARCHAR(256)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
         <rollback>
-            <createTable tableName="interview_category">
-                <column name="interview_id" type="bigserial">
-                    <constraints primaryKey="true" nullable="false" />
-                </column>
-                <column name="interview_title" type="varchar(256)">
-                    <constraints nullable="false" />
-                </column>
-            </createTable>
+            <dropTable tableName="interview_questions" cascadeConstraints="true" />
         </rollback>
     </changeSet>
+
 
 </databaseChangeLog>
