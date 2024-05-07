@@ -57,9 +57,11 @@ public class InterviewQuestionService {
 
         InterviewQuestion parentQuestion = MAPPER.requestDtoToInterviewQuestion(requestDto);
 
-        List<InterviewQuestion> savedSubQuestions = createSubQuestions(requestDto, category, parentQuestion);
+        if (parentQuestion.getSubQuestions() != null) {
+            List<InterviewQuestion> savedSubQuestions = createSubQuestions(requestDto, category, parentQuestion);
+            parentQuestion.setSubQuestions(savedSubQuestions);
+        }
 
-        parentQuestion.setSubQuestions(savedSubQuestions);
         parentQuestion.setCategory(category);
         parentQuestion = interviewQuestionRepository.save(parentQuestion);
 
