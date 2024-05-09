@@ -90,6 +90,7 @@ public class InterviewQuestionService {
             Category category = categoryRepository.findById(requestDto.getCategoryId())
                 .orElseThrow(() -> new NoSuchElementException("Category with ID " + requestDto.getCategoryId() + " not found"));
             question.setCategory(category);
+            question.getSubQuestions().forEach(q -> q.setCategory(category));
         }
 
         if (requestDto.getSubQuestions() != null && !requestDto.getSubQuestions().isEmpty()) {
