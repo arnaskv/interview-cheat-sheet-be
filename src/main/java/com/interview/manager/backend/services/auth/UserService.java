@@ -13,6 +13,7 @@ import java.util.UUID;
 public class UserService {
 
     private final UserRepository userRepository;
+
     private static final UserMapper Mapper = UserMapper.INSTANCE;
 
     public Optional<UserResponseDto> getById(UUID id) {
