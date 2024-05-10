@@ -1,0 +1,26 @@
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="add_date_created_column" author="kasparas.putrius">
+        <addColumn tableName="interview_questions">
+            <column name="date_created" type="timestamp with time zone"/>
+        </addColumn>
+        <rollback>
+            <dropColumn columnName="date_created" tableName="interview_questions"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="update_existing_questions_with_current_date" author="kasparas.putrius">
+        <update tableName="interview_questions">
+            <column name="date_created" valueDate="NOW()"/>
+        </update>
+        <rollback>
+            <update tableName="interview_questions">
+                <column name="date_created" valueNumeric="NULL"/>
+            </update>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

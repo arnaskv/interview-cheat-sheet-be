@@ -10,12 +10,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Getter
@@ -43,5 +45,13 @@ public class InterviewQuestion {
 
     @OneToMany(mappedBy = "parentQuestion", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<InterviewQuestion> subQuestions;
+
+    @Column(name = "date_created", nullable = false, updatable = false)
+    private OffsetDateTime dateCreated;
+
+    @PrePersist
+    public void onPrePersist() {
+        this.setDateCreated(OffsetDateTime.now());
+    }
 }
 
