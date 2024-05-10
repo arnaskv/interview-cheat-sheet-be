@@ -12,7 +12,9 @@ import com.interview.manager.backend.types.DataValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -31,10 +33,12 @@ public class InterviewQuestionService {
         return optionalInterviewQuestion.map(InterviewQuestionResponseDto::of);
     }
 
-    public List<InterviewQuestionResponseDto> getAllInterviewQuestions() {
+    public List<InterviewQuestionResponseDto> getAllInterviewQuestions(@RequestParam(name = "sort", defaultValue = "dateCreatedAsc") String sort) {
         List<InterviewQuestion> parentQuestions = interviewQuestionRepository.findAllByParentQuestionIsNull();
 
-        return parentQuestions.stream()
+        parentQuestions = sortQuestions(parentQuestions, sort);
+
+        List<InterviewQuestionResponseDto> interviewQuestionResponseDto = parentQuestions.stream()
             .map(parentQuestion -> {
                 InterviewQuestionResponseDto parentResponseDto = MAPPER.questionToResponseDto(parentQuestion);
                 List<InterviewQuestionResponseDto> subQuestionsDtoList = parentQuestion.getSubQuestions().stream()
@@ -44,7 +48,30 @@ public class InterviewQuestionService {
                 return parentResponseDto;
             })
             .toList();
+
+        return interviewQuestionResponseDto;
     }
+
+    private List<InterviewQuestion> sortQuestions(List<InterviewQuestion> questions, String sort) {
+        switch (sort) {
+            case "dateCreatedAsc":
+                questions.sort(Comparator.comparing(InterviewQuestion::getDateCreated));
+                break;
+            case "dateCreatedDesc":
+                questions.sort(Comparator.comparing(InterviewQuestion::getDateCreated).reversed());
+                break;
+            case "titleAsc":
+                questions.sort(Comparator.comparing(InterviewQuestion::getTitle));
+                break;
+            case "titleDesc":
+                questions.sort(Comparator.comparing(InterviewQuestion::getTitle).reversed());
+                break;
+            default:
+                break;
+        }
+        return questions;
+    }
+
 
     @Transactional
     public InterviewQuestionResponseDto createInterviewQuestion(InterviewQuestionRequestDto requestDto) {
