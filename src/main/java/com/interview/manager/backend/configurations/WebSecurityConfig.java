@@ -16,7 +16,6 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
-
     private static final String ALLOWED_ORIGIN = System.getProperty("ALLOWED_ORIGIN", "https://gvigai.devbstaging.com");
     private static final List<String> ALLOWED_METHODS = List.of("GET", "POST", "PATCH", "DELETE");
 

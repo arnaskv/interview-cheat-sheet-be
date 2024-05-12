@@ -1,0 +1,35 @@
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="reading-comment-question-cascade-delete" author="kasparas.putrius">
+        <comment>
+            It seems someone edited already run changelog file and removed delete cascade option from comment table
+        </comment>
+
+        <dropForeignKeyConstraint
+            baseTableName="interview_comments"
+            constraintName="fk_comment_question"
+        />
+
+        <addForeignKeyConstraint
+            baseTableName="interview_comments"
+            baseColumnNames="question_id"
+            constraintName="fk_comment_question"
+            referencedTableName="interview_questions"
+            referencedColumnNames="id"
+            onDelete="CASCADE"/>
+
+        <rollback>
+            <addForeignKeyConstraint
+                baseTableName="interview_comments"
+                baseColumnNames="question_id"
+                constraintName="fk_comment_question"
+                referencedTableName="interview_questions"
+                referencedColumnNames="id"/>
+        </rollback>
+
+    </changeSet>
+
+</databaseChangeLog>

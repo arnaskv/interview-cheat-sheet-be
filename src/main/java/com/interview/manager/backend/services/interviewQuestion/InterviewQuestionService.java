@@ -120,15 +120,18 @@ public class InterviewQuestionService {
             .toList();
     }
 
-
     @Transactional
     public void deleteInterviewQuestionById(Long id) {
-        interviewQuestionRepository.findById(id)
-            .ifPresentOrElse(
-                interviewQuestion -> interviewQuestionRepository.deleteById(id),
-                () -> {
-                    throw new NoSuchElementException("Interview question with an ID " + id + " not found");
-                }
-            );
+        InterviewQuestion questionToDelete = interviewQuestionRepository.findById(id)
+            .orElseThrow(() -> new NoSuchElementException("Interview question with ID " + id + " not found"));
+
+        if (questionToDelete.getParentQuestion() != null) {
+            InterviewQuestion parentQuestion = questionToDelete.getParentQuestion();
+            parentQuestion.getSubQuestions().remove(questionToDelete);
+            interviewQuestionRepository.save(parentQuestion);
+            interviewQuestionRepository.delete(questionToDelete);
+        } else {
+            interviewQuestionRepository.deleteById(id);
+        }
     }
 }
