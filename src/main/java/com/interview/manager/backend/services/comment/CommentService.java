@@ -31,7 +31,7 @@ public class CommentService {
 
     public List<CommentResponseDto> getAll() {
         return commentRepository
-            .findAll()
+            .findAllByOrderByDateCreatedDesc()
             .stream()
             .map(Mapper::commentToResponseDto)
             .collect(Collectors.toList());
@@ -43,7 +43,7 @@ public class CommentService {
     }
 
     public List<CommentResponseDto> getAllByQuestionId(Long questionId) {
-        return commentRepository.getAllByQuestionId(questionId).stream()
+        return commentRepository.getAllByQuestionIdOrderByDateCreatedDesc(questionId).stream()
             .map(Mapper::commentToResponseDto)
             .collect(Collectors.toList());
     }

@@ -8,5 +8,10 @@ import java.util.List;
 import java.util.UUID;
 
 public interface CommentRepository extends ListCrudRepository<Comment, UUID> {
-    List<Comment> getAllByQuestionId(Long questionId);
+
+    List<Comment> findAllByOrderByDateCreatedDesc();
+
+    List<Comment> getAllByQuestionIdOrderByDateCreatedDesc(Long questionId);
+
+//    List<Comment> getAllByQuestionId(Long questionId);
 }
