@@ -7,6 +7,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Value;
 
+import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,8 +43,9 @@ public class JwtTokenUtil {
     }
 
     public Claims extractAllClaims(String token){
-        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+        return  Jwts.parser().setSigningKey(secret).build().parseClaimsJws(token).getBody();
     }
+
 
     private String createToken(Map<String, Object> claims, UUID userId, boolean refreshToken) {
         return Jwts.builder().setClaims(claims).setSubject(userId.toString())
