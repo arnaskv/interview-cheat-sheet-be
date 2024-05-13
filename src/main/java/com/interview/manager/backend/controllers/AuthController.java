@@ -23,8 +23,6 @@ public class AuthController {
 
     private final AuthService authService;
 
-
-    // TODO: test everything, not tested
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody UserLoginRequestDto requestDto) {
         UserLoginResponseDto responseDto = authService.login(requestDto);
