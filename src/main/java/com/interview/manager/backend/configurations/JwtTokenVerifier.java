@@ -1,6 +1,8 @@
-package com.interview.manager.backend.services.auth;
+package com.interview.manager.backend.configurations;
 
 import com.interview.manager.backend.dto.UserResponseDto;
+import com.interview.manager.backend.services.auth.JwtTokenUtil;
+import com.interview.manager.backend.services.user.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

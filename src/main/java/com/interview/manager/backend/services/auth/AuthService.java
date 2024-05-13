@@ -6,6 +6,7 @@ import com.interview.manager.backend.dto.UserRegisterRequestDto;
 import com.interview.manager.backend.dto.UserResponseDto;
 import com.interview.manager.backend.models.User;
 import com.interview.manager.backend.repositories.UserRepository;
+import com.interview.manager.backend.services.user.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

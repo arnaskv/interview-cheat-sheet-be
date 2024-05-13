@@ -1,6 +1,5 @@
 package com.interview.manager.backend.configurations;
 
-import com.interview.manager.backend.services.auth.JwtTokenVerifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,10 +31,11 @@ public class WebSecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(authorizeRequests -> authorizeRequests
+                .requestMatchers("/api/v1/auth/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/v1/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/v1/**").permitAll()
-                .requestMatchers(HttpMethod.PATCH, "/api/v1/**").permitAll()
-                .requestMatchers(HttpMethod.DELETE, "/api/v1/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/v1/**").authenticated()
+                .requestMatchers(HttpMethod.PATCH, "/api/v1/**").authenticated()
+                .requestMatchers(HttpMethod.DELETE, "/api/v1/**").authenticated()
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(jwtTokenVerifier, UsernamePasswordAuthenticationFilter.class)

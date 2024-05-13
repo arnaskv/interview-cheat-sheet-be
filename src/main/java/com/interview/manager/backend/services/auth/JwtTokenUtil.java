@@ -1,4 +1,5 @@
 package com.interview.manager.backend.services.auth;
+import com.interview.manager.backend.services.user.UserService;
 import io.jsonwebtoken.Claims;
 
 import io.jsonwebtoken.Jwts;
@@ -7,7 +8,6 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Value;
 
-import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package com.interview.manager.backend.services.auth;
+package com.interview.manager.backend.services.user;
 
 import com.interview.manager.backend.dto.UserResponseDto;
 import com.interview.manager.backend.repositories.UserRepository;
