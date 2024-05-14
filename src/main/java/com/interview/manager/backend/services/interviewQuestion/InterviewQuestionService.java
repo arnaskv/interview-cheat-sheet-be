@@ -38,7 +38,7 @@ public class InterviewQuestionService {
     public List<InterviewQuestionResponseDto> getAllInterviewQuestions(@RequestParam(name = "sort", defaultValue = "dateCreatedAsc") String sort) {
         List<InterviewQuestion> parentQuestions = interviewQuestionRepository.findAllByParentQuestionIsNull();
 
-        sortQuestions(parentQuestions, sort); // Sort parent questions and their sub-questions
+        sortQuestions(parentQuestions, sort);
 
         List<InterviewQuestionResponseDto> interviewQuestionResponseDto = parentQuestions.stream()
             .map(parentQuestion -> {
@@ -78,7 +78,6 @@ public class InterviewQuestionService {
                 break;
         }
 
-        // Sort sub-questions recursively
         for (InterviewQuestion question : questions) {
             if (question.getSubQuestions() != null && !question.getSubQuestions().isEmpty()) {
                 sortQuestions(question.getSubQuestions(), sort);
