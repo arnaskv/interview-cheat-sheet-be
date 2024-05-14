@@ -7,6 +7,7 @@ import com.interview.manager.backend.exceptions.DataValidationException;
 import com.interview.manager.backend.models.Category;
 import com.interview.manager.backend.models.InterviewQuestion;
 import com.interview.manager.backend.repositories.CategoryRepository;
+import com.interview.manager.backend.repositories.CommentRepository;
 import com.interview.manager.backend.repositories.InterviewQuestionRepository;
 import com.interview.manager.backend.types.DataValidation;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ import java.util.Optional;
 public class InterviewQuestionService {
     private final InterviewQuestionRepository interviewQuestionRepository;
     private final CategoryRepository categoryRepository;
+    private final CommentRepository commentRepository;
     private static final InterviewQuestionMapper MAPPER = InterviewQuestionMapper.INSTANCE;
 
 
@@ -36,7 +38,7 @@ public class InterviewQuestionService {
     public List<InterviewQuestionResponseDto> getAllInterviewQuestions(@RequestParam(name = "sort", defaultValue = "dateCreatedAsc") String sort) {
         List<InterviewQuestion> parentQuestions = interviewQuestionRepository.findAllByParentQuestionIsNull();
 
-        parentQuestions = sortQuestions(parentQuestions, sort);
+        sortQuestions(parentQuestions, sort); // Sort parent questions and their sub-questions
 
         List<InterviewQuestionResponseDto> interviewQuestionResponseDto = parentQuestions.stream()
             .map(parentQuestion -> {
@@ -52,7 +54,7 @@ public class InterviewQuestionService {
         return interviewQuestionResponseDto;
     }
 
-    private List<InterviewQuestion> sortQuestions(List<InterviewQuestion> questions, String sort) {
+    private void sortQuestions(List<InterviewQuestion> questions, String sort) {
         switch (sort) {
             case "dateCreatedAsc":
                 questions.sort(Comparator.comparing(InterviewQuestion::getDateCreated));
@@ -66,10 +68,26 @@ public class InterviewQuestionService {
             case "titleDesc":
                 questions.sort(Comparator.comparing(InterviewQuestion::getTitle).reversed());
                 break;
+            case "commentCountAsc":
+                questions.sort(Comparator.comparingInt(this::getCommentCountForQuestion));
+                break;
+            case "commentCountDesc":
+                questions.sort(Comparator.comparingInt(q -> -getCommentCountForQuestion(q)));
+                break;
             default:
                 break;
         }
-        return questions;
+
+        // Sort sub-questions recursively
+        for (InterviewQuestion question : questions) {
+            if (question.getSubQuestions() != null && !question.getSubQuestions().isEmpty()) {
+                sortQuestions(question.getSubQuestions(), sort);
+            }
+        }
+    }
+
+    private int getCommentCountForQuestion(InterviewQuestion question) {
+        return commentRepository.countByQuestionId(question.getId());
     }
 
 

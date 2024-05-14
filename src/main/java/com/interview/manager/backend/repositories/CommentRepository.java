@@ -9,4 +9,6 @@ import java.util.UUID;
 
 public interface CommentRepository extends ListCrudRepository<Comment, UUID> {
     List<Comment> getAllByQuestionId(Long questionId);
+
+    int countByQuestionId(Long questionId);
 }
