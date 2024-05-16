@@ -12,4 +12,6 @@ public interface CommentRepository extends ListCrudRepository<Comment, UUID> {
     List<Comment> findAllByOrderByDateCreatedDesc();
 
     List<Comment> getAllByQuestionIdOrderByDateCreatedDesc(Long questionId);
+
+    int countByQuestionId(Long questionId);
 }

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -42,8 +43,8 @@ public class InterviewQuestionsController {
     }
 
     @GetMapping
-    public ResponseEntity<List<InterviewQuestionResponseDto>> getAllInterviewQuestions() {
-        List<InterviewQuestionResponseDto> interviewQuestionResponseDto = interviewQuestionService.getAllInterviewQuestions();
+    public ResponseEntity<List<InterviewQuestionResponseDto>> getAllInterviewQuestions(@RequestParam(name = "sort", defaultValue = "dateCreatedAsc") String sort) {
+        List<InterviewQuestionResponseDto> interviewQuestionResponseDto = interviewQuestionService.getAllInterviewQuestions(sort);
         return ResponseEntity.ok(interviewQuestionResponseDto);
     }
 

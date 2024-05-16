@@ -7,12 +7,15 @@ import com.interview.manager.backend.exceptions.DataValidationException;
 import com.interview.manager.backend.models.Category;
 import com.interview.manager.backend.models.InterviewQuestion;
 import com.interview.manager.backend.repositories.CategoryRepository;
+import com.interview.manager.backend.repositories.CommentRepository;
 import com.interview.manager.backend.repositories.InterviewQuestionRepository;
 import com.interview.manager.backend.types.DataValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -23,6 +26,7 @@ import java.util.Optional;
 public class InterviewQuestionService {
     private final InterviewQuestionRepository interviewQuestionRepository;
     private final CategoryRepository categoryRepository;
+    private final CommentRepository commentRepository;
     private static final InterviewQuestionMapper MAPPER = InterviewQuestionMapper.INSTANCE;
 
 
@@ -31,10 +35,12 @@ public class InterviewQuestionService {
         return optionalInterviewQuestion.map(InterviewQuestionResponseDto::of);
     }
 
-    public List<InterviewQuestionResponseDto> getAllInterviewQuestions() {
+    public List<InterviewQuestionResponseDto> getAllInterviewQuestions(@RequestParam(name = "sort", defaultValue = "dateCreatedAsc") String sort) {
         List<InterviewQuestion> parentQuestions = interviewQuestionRepository.findAllByParentQuestionIsNull();
 
-        return parentQuestions.stream()
+        sortQuestions(parentQuestions, sort);
+
+        List<InterviewQuestionResponseDto> interviewQuestionResponseDto = parentQuestions.stream()
             .map(parentQuestion -> {
                 InterviewQuestionResponseDto parentResponseDto = MAPPER.questionToResponseDto(parentQuestion);
                 List<InterviewQuestionResponseDto> subQuestionsDtoList = parentQuestion.getSubQuestions().stream()
@@ -44,7 +50,45 @@ public class InterviewQuestionService {
                 return parentResponseDto;
             })
             .toList();
+
+        return interviewQuestionResponseDto;
     }
+
+    private void sortQuestions(List<InterviewQuestion> questions, String sort) {
+        switch (sort) {
+            case "dateCreatedAsc":
+                questions.sort(Comparator.comparing(InterviewQuestion::getDateCreated));
+                break;
+            case "dateCreatedDesc":
+                questions.sort(Comparator.comparing(InterviewQuestion::getDateCreated).reversed());
+                break;
+            case "titleAsc":
+                questions.sort(Comparator.comparing(InterviewQuestion::getTitle));
+                break;
+            case "titleDesc":
+                questions.sort(Comparator.comparing(InterviewQuestion::getTitle).reversed());
+                break;
+            case "commentCountAsc":
+                questions.sort(Comparator.comparingInt(this::getCommentCountForQuestion));
+                break;
+            case "commentCountDesc":
+                questions.sort(Comparator.comparingInt(q -> -getCommentCountForQuestion(q)));
+                break;
+            default:
+                break;
+        }
+
+        for (InterviewQuestion question : questions) {
+            if (question.getSubQuestions() != null && !question.getSubQuestions().isEmpty()) {
+                sortQuestions(question.getSubQuestions(), sort);
+            }
+        }
+    }
+
+    private int getCommentCountForQuestion(InterviewQuestion question) {
+        return commentRepository.countByQuestionId(question.getId());
+    }
+
 
     @Transactional
     public InterviewQuestionResponseDto createInterviewQuestion(InterviewQuestionRequestDto requestDto) {
