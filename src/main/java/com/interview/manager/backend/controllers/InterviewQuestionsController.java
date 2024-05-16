@@ -43,7 +43,7 @@ public class InterviewQuestionsController {
     }
 
     @GetMapping
-    public ResponseEntity<List<InterviewQuestionResponseDto>> getAllInterviewQuestions(@RequestParam(name = "sort", defaultValue = "dateCreatedAsc") String sort) {
+    public ResponseEntity<List<InterviewQuestionResponseDto>> getAllInterviewQuestions(@RequestParam(name = "sort", defaultValue = "dateCreatedDesc") String sort) {
         List<InterviewQuestionResponseDto> interviewQuestionResponseDto = interviewQuestionService.getAllInterviewQuestions(sort);
         return ResponseEntity.ok(interviewQuestionResponseDto);
     }
